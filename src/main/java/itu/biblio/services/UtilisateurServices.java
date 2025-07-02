@@ -2,7 +2,6 @@ package itu.biblio.services;
 
 import org.springframework.stereotype.Service;
 
-
 import itu.biblio.repositories.AdherantRepository;
 
 import itu.biblio.entities.*;
@@ -42,6 +41,14 @@ public class UtilisateurServices {
             utilisateur.setIdAdherant(adherant);
         }
         utilisateurRepository.save(utilisateur);
+    }
+
+    public Utilisateur login(String email, String password) {
+        Optional<Utilisateur> utilisateur = utilisateurRepository.findByEmail(email);
+        if (utilisateur.isPresent() && utilisateur.get().getMdp().equals(password)) {
+            return utilisateur.get();
+        }
+        throw new RuntimeException("Invalid email or password");
     }
 
 }
