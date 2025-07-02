@@ -7,13 +7,9 @@ CREATE TABLE livre(
     titre VARCHAR(255),
     auteur VARCHAR(255),
     age INT,
-    image VARCHAR(50),
-    est_etudiant BOOLEAN,
-    est_prof BOOLEAN,
-    est_pro BOOLEAN,
-    est_anonyme BOOLEAN
+    image VARCHAR(50)
 );
-
+ALTER TABLE livre ADD COLUMN examplaire INT DEFAULT 1;
 CREATE TABLE adherant(
     id SERIAL PRIMARY KEY,
     type VARCHAR(100),
@@ -22,6 +18,11 @@ CREATE TABLE adherant(
     nbr_jrs_pret INT
 );
 
+CREATE TABLE livre_adherant(
+    id SERIAL PRIMARY KEY,
+    livre_id INT REFERENCES livre(id),
+    adherant_id INT REFERENCES adherant(id)
+);
 CREATE TABLE genre(
     id SERIAL PRIMARY KEY,
     nom VARCHAR(255)
@@ -107,6 +108,35 @@ VALUES
 -- On suppose que les ID générés automatiquement sont 1, 2, 3 pour les adhérents
 INSERT INTO utilisateur (nom, prenom, date_naissance, email, mdp, est_admin, id_adherant)
 VALUES 
-  ('Rakoto', 'Jean', '1980-05-15', 'jean.rakoto@example.com', 'passProf123', FALSE, 1),
+  ('Rabenarivo', 'Raja', '2004-04-03', 'rajarabenarivo21@gmail.com', 'raja2004', FALSE, 1),
   ('Rabe', 'Sofia', '2001-11-22', 'sofia.rabe@example.com', 'passEtud456', FALSE, 2),
   ('Andria', 'Lova', '1990-03-10', 'lova.andria@example.com', 'passPro789', TRUE, 3);
+
+
+
+  -- Insertion des livres
+INSERT INTO livre (titre, auteur, age, image,examplaire)
+VALUES 
+  ('Introduction à Java', 'John Doe', 18, 'java.jpg',3),
+  ('Bases de données avancées', 'Jane Smith', 21, 'bdd.jpg',2),
+  ('Mathématiques pour informaticiens', 'Albert Einstein', 16, 'math.jpg',4),
+  ('Design Patterns en Java', 'Gamma et al.', 25, 'design.jpg',4),
+  ('Programmation Web avec Spring', 'Rod Johnson', 20, 'spring.jpg',3);
+
+-- Insertion des relations livre_adherant
+-- Les livres sont associés à des types d'adhérents (prof, étudiant, etc.)
+INSERT INTO livre_adherant (livre_id, adherant_id)
+VALUES 
+  (1, 1),  
+  (2, 1),  
+  (3, 2),  
+  (4, 1),  
+  (5, 2),  
+  (5, 3); 
+
+SELECT livre.id, livre.titre, livre.auteur, livre.age, livre.image
+FROM livre
+JOIN livre_adherant ON livre.id = livre_adherant.livre_id
+JOIN adherant ON livre_adherant.adherant_id = adherant.id
+JOIN utilisateur ON utilisateur.id_adherant = adherant.id
+WHERE utilisateur.id = 1;
