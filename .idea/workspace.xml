@@ -4,7 +4,19 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="0f261079-ca1c-4c3d-8495-7878e0afbc2c" name="Changes" comment="" />
+    <list default="true" id="0f261079-ca1c-4c3d-8495-7878e0afbc2c" name="Changes" comment="">
+      <change afterPath="$PROJECT_DIR$/src/main/resources/templates/hello.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/compiler.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/compiler.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/example/biblio/BiblioApplication.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/com/example/biblio/BiblioApplication.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/itu/biblio/App.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/itu/biblio/App.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/itu/biblio/AppConfig.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/itu/biblio/AppConfig.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/itu/biblio/HelloController$Result.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/itu/biblio/HelloController$Result.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/itu/biblio/HelloController.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/itu/biblio/HelloController.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/itu/biblio/HelloController.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/itu/biblio/sql/BD.sql" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/test-classes/com/example/biblio/BiblioApplicationTests.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/test-classes/com/example/biblio/BiblioApplicationTests.class" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -43,14 +55,20 @@
     "RunOnceActivity.git.unshallow": "true",
     "Shell Script.mvnw.executor": "Run",
     "Spring Boot.BiblioApplication.executor": "Run",
-    "git-widget-placeholder": "authentification",
-    "last_opened_file_path": "D:/ITU/SPRING/biblio",
+    "git-widget-placeholder": "main",
+    "ignore.virus.scanning.warn.message": "true",
+    "last_opened_file_path": "D:/ITU/exam/bibliotheque",
     "node.js.detected.package.eslint": "true",
     "node.js.detected.package.tslint": "true",
     "node.js.selected.package.eslint": "(autodetect)",
     "node.js.selected.package.tslint": "(autodetect)",
     "nodejs_package_manager_path": "npm",
     "vue.rearranger.settings.migration": "true"
+  },
+  "keyToStringList": {
+    "DatabaseDriversLRU": [
+      "postgresql"
+    ]
   }
 }]]></component>
   <component name="RunManager" selected="Spring Boot.BiblioApplication">
@@ -71,7 +89,7 @@
     </configuration>
     <configuration name="BiblioApplication" type="SpringBootApplicationConfigurationType" factoryName="Spring Boot" nameIsGenerated="true">
       <option name="FRAME_DEACTIVATION_UPDATE_POLICY" value="UpdateClassesAndResources" />
-      <module name="fromagerie" />
+      <module name="biblio" />
       <option name="SPRING_BOOT_MAIN_CLASS" value="com.example.biblio.BiblioApplication" />
       <method v="2">
         <option name="Make" enabled="true" />
@@ -97,6 +115,7 @@
       <workItem from="1751395946536" duration="65000" />
       <workItem from="1751396115094" duration="277000" />
       <workItem from="1751434703409" duration="816000" />
+      <workItem from="1751435974906" duration="256000" />
     </task>
     <servers />
   </component>
