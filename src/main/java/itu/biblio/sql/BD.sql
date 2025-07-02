@@ -94,3 +94,19 @@ CREATE TABLE historique_livre(
     statut_id INT REFERENCES statut_livre(id),
     date_debut DATE
 );
+
+
+
+INSERT INTO adherant (type, nbr_reservation, nbr_livre_pret, nbr_jrs_pret)
+VALUES 
+  ('prof', 10, 8, 30),  
+  ('etudiant', 5, 4, 15),
+  ('pro', 7, 6, 20);     
+
+-- Insertion dans la table utilisateur
+-- On suppose que les ID générés automatiquement sont 1, 2, 3 pour les adhérents
+INSERT INTO utilisateur (nom, prenom, date_naissance, email, mdp, est_admin, id_adherant)
+VALUES 
+  ('Rakoto', 'Jean', '1980-05-15', 'jean.rakoto@example.com', 'passProf123', FALSE, 1),
+  ('Rabe', 'Sofia', '2001-11-22', 'sofia.rabe@example.com', 'passEtud456', FALSE, 2),
+  ('Andria', 'Lova', '1990-03-10', 'lova.andria@example.com', 'passPro789', TRUE, 3);
