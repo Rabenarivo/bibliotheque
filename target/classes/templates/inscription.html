@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Inscription</title>
+</head>
+<body>
+    <h1>Inscription</h1>
+    <form th:action="@{/utilisateur/inscription}" th:object="${utilisateur}" method="post">
+        <div>
+            <label for="nom">Nom:</label>
+            <input type="text" id="nom" th:field="*{nom}" required>
+        </div>
+        <div>
+            <label for="prenom">Prénom:</label>
+            <input type="text" id="prenom" th:field="*{prenom}" required>
+        </div>
+        <div>
+            <label for="dateNaissance">Date de naissance:</label>
+            <input type="date" id="dateNaissance" th:field="*{dateNaissance}" required>
+        </div>
+        <div>
+            <label for="email">Email:</label>
+            <input type="email" id="email" th:field="*{email}" required>
+        </div>
+        <div>
+            <label for="mdp">Mot de passe:</label>
+            <input type="password" id="mdp" th:field="*{mdp}" required>
+        </div>
+        <div>
+            <label for="idAdherant">Type d'adhérent:</label>
+            <select id="idAdherant" th:field="*{idAdherant.id}" required>
+                <option value="">Sélectionnez un type</option>
+                <option th:each="adherant : ${adherants}"
+                        th:value="${adherant.id}"
+                        th:text="${adherant.type}">
+                </option>
+            </select>
+        </div>
+        <button type="submit">S'inscrire</button>
+    </form>
+    
+    <div th:if="${param.success}">
+        <p>Inscription réussie!</p>
+    </div>
+</body>
+</html>
