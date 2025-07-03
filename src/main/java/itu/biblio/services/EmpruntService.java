@@ -1,6 +1,7 @@
 package itu.biblio.services;
 
 import itu.biblio.entities.Emprunt;
+import itu.biblio.projection.EmpruntProjection;
 import itu.biblio.repositories.EmpruntRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -27,5 +28,21 @@ public class EmpruntService {
 
     public void deleteEmprunt(Integer id) {
         empruntRepository.deleteById(id);
+    }
+
+    public List<EmpruntProjection> getAllEmpruntsWithDetails() {
+        return empruntRepository.findAllEmpruntsWithDetails();
+    }
+
+    public EmpruntProjection getEmpruntByIdWithDetails(Integer id) {
+        return empruntRepository.findEmpruntByIdWithDetails(id).orElse(null);
+    }
+
+    public long countEmpruntsByStatut(String statut) {
+        return empruntRepository.countByStatutEmprunt(statut);
+    }
+
+    public long countEmpruntsEnRetard() {
+        return empruntRepository.countEmpruntsEnRetard();
     }
 } 

@@ -2,7 +2,7 @@ package itu.biblio.services;
 
 import itu.biblio.entities.Reservation;
 import itu.biblio.entities.Emprunt;
-import itu.biblio.entities.EmpruntDetails;
+import itu.biblio.entities.EmpruntDetail;
 import itu.biblio.entities.HistoriqueLivre;
 import itu.biblio.entities.StatutLivre;
 import itu.biblio.projection.ReservationProjection;
@@ -76,6 +76,10 @@ public class ReservationService {
             .orElseThrow(() -> new IllegalArgumentException("Reservation not found"));
     }
 
+    public long countPendingReservations() {
+        return reservationRepository.countByEstValideeFalse();
+    }
+
     @Transactional
     public void validateReservationAndCreateEmprunt(Integer reservationId, Integer typeEmpruntId, String dateRetour) {
         // 1. Récupérer la réservation
@@ -91,11 +95,12 @@ public class ReservationService {
         emprunt = empruntRepository.save(emprunt);
 
         // 3. Créer les détails d'emprunt
-        EmpruntDetails empruntDetails = new EmpruntDetails();
-        empruntDetails.setEmprunt(emprunt);
-        empruntDetails.setLivre(reservation.getLivre());
-        empruntDetails.setTypeEmpruntId(typeEmpruntId);
-        empruntDetailsRepository.save(empruntDetails);
+        EmpruntDetail empruntDetail = new EmpruntDetail();
+        empruntDetail.setEmprunt(emprunt);
+        empruntDetail.setLivre(reservation.getLivre());
+        empruntDetail.setDateDebut(LocalDate.now());
+        empruntDetail.setDateFin(LocalDate.parse(dateRetour, DateTimeFormatter.ofPattern("yyyy-MM-dd")));
+        empruntDetailsRepository.save(empruntDetail);
 
         // 4. Mettre à jour l'historique du livre
         HistoriqueLivre historiqueLivre = new HistoriqueLivre();

@@ -51,4 +51,8 @@ public class UtilisateurServices {
         throw new RuntimeException("Invalid email or password");
     }
 
+    public long countAllUtilisateurs() {
+        return utilisateurRepository.count();
+    }
+
 }

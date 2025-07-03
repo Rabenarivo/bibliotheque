@@ -13,7 +13,7 @@ import java.time.LocalDate;
 public class Emprunt {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id", nullable = false)
+    @Column(name = "", nullable = false)
     private Integer id;
 
     @ManyToOne(fetch = FetchType.LAZY)

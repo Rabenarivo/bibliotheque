@@ -62,7 +62,7 @@ public class UtilisateurController {
             model.addAttribute("utilisateur", user);
             
             if (user.isAdmin()) {
-                return "redirect:/admin/reservations";
+                return "redirect:/admin/dashboard";
             }
             return "profile";
         }

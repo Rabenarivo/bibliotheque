@@ -17,6 +17,10 @@ public class EmpruntDetail {
     private Integer id;
 
     @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "emprunt_id")
+    private Emprunt emprunt;
+
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "livre_id")
     private Livre livre;
 

@@ -15,7 +15,7 @@ public interface ReservationRepository extends JpaRepository<Reservation, Intege
     
 
     
-    @Query("SELECT r.id AS reservationId, u.nom AS utilisateurNom, u.prenom AS utilisateurPrenom, u.email AS utilisateurEmail, l.titre AS livreTitre, l.auteur AS livreAuteur, r.dateReservation AS dateReservation " +
+    @Query("SELECT r.id AS reservationId, u.nom AS utilisateurNom, u.prenom AS utilisateurPrenom, u.email AS utilisateurEmail, l.titre AS livreTitre, l.auteur AS livreAuteur, FUNCTION('TO_CHAR', r.dateReservation, 'DD/MM/YYYY') AS dateReservation " +
            "FROM Reservation r " +
            "LEFT JOIN r.utilisateur u " +
            "LEFT JOIN r.livre l " +
@@ -25,10 +25,12 @@ public interface ReservationRepository extends JpaRepository<Reservation, Intege
 
     @Query("SELECT r.id as reservationId, u.nom as utilisateurNom, u.prenom as utilisateurPrenom, " +
            "u.email as utilisateurEmail, l.titre as livreTitre, l.auteur as livreAuteur, " +
-           "r.dateReservation as dateReservation " +
+           "FUNCTION('TO_CHAR', r.dateReservation, 'DD/MM/YYYY') as dateReservation " +
            "FROM Reservation r " +
            "LEFT JOIN r.utilisateur u " +
            "LEFT JOIN r.livre l " +
            "WHERE r.id = :reservationId")
     Optional<ReservationProjection> findReservationById(@Param("reservationId") Integer reservationId);
+
+    long countByEstValideeFalse();
 }

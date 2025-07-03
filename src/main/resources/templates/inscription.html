@@ -7,7 +7,7 @@
     <link rel="stylesheet" th:href="@{/css/style.css}">
 </head>
 <body>
-    <div class="container">
-        <h1>Inscription</h1>
-        <form th:action="@{/utilisateur/inscription}" th:object="${utilisateur}" method="post">
+    <div class="inscription-container">
+        <form class="inscription-form" th:action="@{/utilisateur/inscription}" th:object="${utilisateur}" method="post">
+            <h1>📝 Inscription</h1>
             <div class="form-group
