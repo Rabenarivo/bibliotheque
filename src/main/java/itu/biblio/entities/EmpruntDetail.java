@@ -9,8 +9,8 @@ import java.time.LocalDate;
 @Getter
 @Setter
 @Entity
-@Table(name = "historique_livre")
-public class HistoriqueLivre {
+@Table(name = "emprunt_detail")
+public class EmpruntDetail {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id", nullable = false)
@@ -20,16 +20,13 @@ public class HistoriqueLivre {
     @JoinColumn(name = "livre_id")
     private Livre livre;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "utilisateur_id")
-    private Utilisateur utilisateur;
+    @Column(name = "date_debut")
+    private LocalDate dateDebut;
 
-    @Column(name = "date_action")
-    private LocalDate dateAction;
+    @Column(name = "date_fin")
+    private LocalDate dateFin;
 
-    @Column(name = "type_action")
-    private String typeAction;
+    @Column(name = "date_retour")
+    private LocalDate dateRetour;
 
-    @Column(name = "description")
-    private String description;
 }

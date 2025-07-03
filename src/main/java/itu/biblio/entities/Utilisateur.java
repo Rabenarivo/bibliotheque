@@ -38,4 +38,8 @@ public class Utilisateur {
     @JoinColumn(name = "id_adherant")
     private Adherant idAdherant;
 
-}
+    public boolean isAdmin() {
+        return Boolean.TRUE.equals(estAdmin);
+    }
+    }
+

@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Admin - Reservations</title>
+    <style>
+        table { border-collapse: collapse; width: 100%; }
+        th, td { border: 1px solid #ddd; padding: 8px; text-align: left; }
+        th { background-color: #f2f2f2; }
+    </style>
+</head>
+<body>
+    <h1>Pending Reservations</h1>
+    <div th:if="${reservations.empty}">
+        <p>No pending reservations found.</p>
+    </div>
+    <table th:unless="${reservations.empty}">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>User</th>
+                <th>Email</th>
+                <th>Book</th>
+                <th>Author</th>
+                <th>Date</th>
+                <th>Action</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr th:each="reservation : ${reservations}">
+                <!-- Debug : Affiche l'objet reservation en JSON -->
+                <!-- <td th:text="${#objects.toJson(reservation)}"></td> -->
+                <td th:text="${reservation.reservationId}"></td>
+                <td th:text="${reservation.utilisateurPrenom + ' ' + reservation.utilisateurNom}"></td>
+                <td th:text="${reservation.utilisateurEmail}"></td>
+                <td th:text="${reservation.livreTitre}"></td>
+                <td th:text="${reservation.livreAuteur}"></td>
+                <td th:text="${#temporals.format(reservation.dateReservation, 'dd/MM/yyyy')}"></td>
+                
+                <td>
+                    <a th:href="@{/admin/reservations/validate-form(reservationId=${reservation.reservationId})}" 
+                       class="btn btn-primary">Validate</a>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <div style="margin-top: 20px;">
+        <a href="/profile">Back to Profile</a>
+    </div>
+</body>
+</html>

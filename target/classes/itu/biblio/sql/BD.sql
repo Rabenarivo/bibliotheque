@@ -83,7 +83,7 @@ CREATE TABLE reservation(
     livre_id INT REFERENCES livre(id),
     date_debut DATE
 );
-ALTER TABLE  reservation ADD COLUMN statut_reservation BOOLEAN DEFAULT 'FALSE';
+
 CREATE TABLE genre_livre(
     livre_id INT REFERENCES livre(id),
     genre_id INT REFERENCES genre(id)
@@ -106,8 +106,7 @@ VALUES
 
 
 INSERT INTO utilisateur (nom, prenom, date_naissance, email, mdp, est_admin, id_adherant)
-VALUES
-*('Rabenarivo', 'Raja', '2004-04-03', 'rajarabenarivo21@gmail.com', 'raja2004', FALSE, 1); 
+VALUES 
   ('Rabenarivo', 'Raja', '2004-04-03', 'rajarabenarivo21@gmail.com', 'raja2004', FALSE, 1);
 
 
@@ -225,10 +224,14 @@ SELECT
     u.email AS utilisateur_email,
     l.titre AS livre_titre,
     l.auteur AS livre_auteur,
-    r.date_debut AS date_reservation
+    r.date_reservation AS date_reservation
 FROM 
     reservation r
-JOIN 
+LEFT JOIN 
     utilisateur u ON r.utilisateur_id = u.id
-JOIN 
-    livre l ON r.livre_id = l.id;
+LEFT JOIN 
+    livre l ON r.livre_id = l.id
+WHERE 
+    r.est_validee = f
+ORDER BY 
+    r.date_reservation DESC;
