@@ -1,7 +1,9 @@
 D:\ITU\exam\bibliotheque\src\main\java\itu\biblio\BibliothequeApplication.java
 D:\ITU\exam\bibliotheque\src\main\java\itu\biblio\entities\Genre.java
+D:\ITU\exam\bibliotheque\src\main\java\itu\biblio\controllers\ReservationController.java
 D:\ITU\exam\bibliotheque\src\main\java\itu\biblio\repositories\GenreRepository.java
 D:\ITU\exam\bibliotheque\src\main\java\itu\biblio\controllers\UtilisateurController.java
+D:\ITU\exam\bibliotheque\src\main\java\itu\biblio\projection\ReservatioProjection.java
 D:\ITU\exam\bibliotheque\src\main\java\itu\biblio\entities\Livre.java
 D:\ITU\exam\bibliotheque\src\main\java\itu\biblio\entities\Utilisateur.java
 D:\ITU\exam\bibliotheque\src\main\java\itu\biblio\repositories\ReservationRepository.java

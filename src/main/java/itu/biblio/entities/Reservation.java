@@ -5,6 +5,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 @Getter
 @Setter
@@ -13,7 +14,6 @@ import java.time.LocalDate;
 public class Reservation {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id", nullable = false)
     private Integer id;
 
     @ManyToOne(fetch = FetchType.LAZY)
@@ -24,7 +24,12 @@ public class Reservation {
     @JoinColumn(name = "livre_id")
     private Livre livre;
 
+    @Column(name = "date_reservation")
+    private LocalDateTime dateReservation;
+
+    @Column(name = "statut")
+    private String statut;  // PENDING, CONFIRMED, CANCELLED
+
     @Column(name = "date_debut")
     private LocalDate dateDebut;
-
 }

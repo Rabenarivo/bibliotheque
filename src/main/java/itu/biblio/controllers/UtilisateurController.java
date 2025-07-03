@@ -43,6 +43,9 @@ public class UtilisateurController {
         try {
             Utilisateur loggedInUser = utilisateurServices.login(utilisateur.getEmail(), utilisateur.getMdp());
             session.setAttribute("userId", loggedInUser.getId());
+            if (loggedInUser.getEstAdmin()) {
+                return "redirect:/admin";
+            }
             return "redirect:/profile";
         } catch (RuntimeException e) {
             return "redirect:/login?error";
@@ -67,6 +70,7 @@ public class UtilisateurController {
     @GetMapping("/logout")
     public String logout(HttpSession session) {
         session.invalidate();
-        return "redirect:/utilisateur/login";
+        return "redirect:/login";
     }
 }
+

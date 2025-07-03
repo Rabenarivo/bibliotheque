@@ -32,11 +32,14 @@ public class LivreController {
    
 
     @GetMapping("/livres")
-    public List<ListeLivreParAdherantProjection> getAllLivres(HttpSession session, Model model) {
+    public String getAllLivres(HttpSession session, Model model) {
         Integer userId = (Integer) session.getAttribute("userId");
+        if (userId == null) {
+            return "redirect:/login";
+        }
         List<ListeLivreParAdherantProjection> livres = livreService.getAllLivres(userId);
         model.addAttribute("livres", livres);
-        return livres;
+        return "livres";
     }
 
     @GetMapping("/reservation_livre")
@@ -46,13 +49,13 @@ public class LivreController {
             return "redirect:/login";
         }
     
-        // Check availability of the book
+
         LivreDisponibiliteProjection disponibilite = livreService.getLivreDisponibiliteById(livreId);
         if (disponibilite == null || disponibilite.getExemplairesDisponibles() <= 0) {
             return "redirect:/livres?error=not_available";
         }
     
-        // Proceed with the reservation
+
         Reservation reservation = new Reservation();
         Utilisateur utilisateur = new Utilisateur();
         utilisateur.setId(userId);

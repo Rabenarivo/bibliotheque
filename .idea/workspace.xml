@@ -5,26 +5,27 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="0f261079-ca1c-4c3d-8495-7878e0afbc2c" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/dataSources.local.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/dataSources.local.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/dataSources.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/dataSources.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/dataSources/b270e0f8-60e8-4033-a6ce-792e55450a53.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/dataSources/b270e0f8-60e8-4033-a6ce-792e55450a53.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/jpa.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/jpa.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/itu/biblio/controllers/LivreController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/itu/biblio/controllers/LivreController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/itu/biblio/entities/HistoriqueLivre.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/itu/biblio/entities/HistoriqueLivre.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/itu/biblio/entities/Livre.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/itu/biblio/entities/Livre.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/itu/biblio/controllers/UtilisateurController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/itu/biblio/controllers/UtilisateurController.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/itu/biblio/repositories/LivreRepository.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/itu/biblio/repositories/LivreRepository.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/itu/biblio/services/LivreServices.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/itu/biblio/services/LivreServices.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/itu/biblio/services/ReservationService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/itu/biblio/services/ReservationService.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/itu/biblio/sql/BD.sql" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/itu/biblio/sql/BD.sql" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/templates/livres.html" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/templates/livres.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/templates/profile.html" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/templates/profile.html" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/target/classes/itu/biblio/controllers/LivreController.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/itu/biblio/controllers/LivreController.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/itu/biblio/controllers/UtilisateurController.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/itu/biblio/controllers/UtilisateurController.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/itu/biblio/entities/HistoriqueLivre.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/itu/biblio/entities/HistoriqueLivre.class" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/target/classes/itu/biblio/entities/Livre.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/itu/biblio/entities/Livre.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/itu/biblio/entities/StatutLivre.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/itu/biblio/entities/StatutLivre.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/itu/biblio/repositories/GenreRepository.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/itu/biblio/repositories/GenreRepository.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/itu/biblio/entities/LivreAdherant.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/itu/biblio/entities/LivreAdherant.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/itu/biblio/entities/Reservation.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/itu/biblio/entities/Reservation.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/itu/biblio/repositories/HistoriqueLivreRepository.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/itu/biblio/repositories/HistoriqueLivreRepository.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/itu/biblio/repositories/LivreAdherantRepository.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/itu/biblio/repositories/LivreAdherantRepository.class" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/target/classes/itu/biblio/repositories/LivreRepository.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/itu/biblio/repositories/LivreRepository.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/itu/biblio/services/LivreServices.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/itu/biblio/services/LivreServices.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/itu/biblio/repositories/ReservationRepository.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/itu/biblio/repositories/ReservationRepository.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/itu/biblio/services/ReservationService.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/itu/biblio/services/ReservationService.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/itu/biblio/services/UtilisateurServices.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/itu/biblio/services/UtilisateurServices.class" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/target/classes/itu/biblio/sql/BD.sql" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/itu/biblio/sql/BD.sql" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/templates/livres.html" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/templates/livres.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/templates/profile.html" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/templates/profile.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/maven-status/maven-compiler-plugin/compile/default-compile/createdFiles.lst" beforeDir="false" afterPath="$PROJECT_DIR$/target/maven-status/maven-compiler-plugin/compile/default-compile/createdFiles.lst" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/target/maven-status/maven-compiler-plugin/compile/default-compile/inputFiles.lst" beforeDir="false" afterPath="$PROJECT_DIR$/target/maven-status/maven-compiler-plugin/compile/default-compile/inputFiles.lst" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -76,7 +77,7 @@
     "SHARE_PROJECT_CONFIGURATION_FILES": "true",
     "Shell Script.mvnw.executor": "Run",
     "Spring Boot.BiblioApplication.executor": "Run",
-    "git-widget-placeholder": "reservation__livre",
+    "git-widget-placeholder": "admin__validation__pret",
     "ignore.virus.scanning.warn.message": "true",
     "last_opened_file_path": "D:/ITU/exam/bibliotheque",
     "node.js.detected.package.eslint": "true",
