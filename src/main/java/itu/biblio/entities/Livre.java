@@ -31,4 +31,7 @@ public class Livre {
     @Column(name = "examplaire")
     private Integer examplaire;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "statut_id")
+    private StatutLivre statutLivre;
 }

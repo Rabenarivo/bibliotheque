@@ -43,9 +43,6 @@ public class UtilisateurController {
         try {
             Utilisateur loggedInUser = utilisateurServices.login(utilisateur.getEmail(), utilisateur.getMdp());
             session.setAttribute("userId", loggedInUser.getId());
-            if (loggedInUser.getEstAdmin()) {
-                return "redirect:/admin";
-            }
             return "redirect:/profile";
         } catch (RuntimeException e) {
             return "redirect:/login?error";
@@ -56,21 +53,25 @@ public class UtilisateurController {
     public String showProfile(Model model, HttpSession session) {
         Integer userId = (Integer) session.getAttribute("userId");
         if (userId == null) {
-            return "redirect:/utilisateur/login";
+            return "redirect:/login";
         }
         
         Optional<Utilisateur> utilisateur = utilisateurServices.getUtilisateurById(userId);
         if (utilisateur.isPresent()) {
-            model.addAttribute("utilisateur", utilisateur.get());
+            Utilisateur user = utilisateur.get();
+            model.addAttribute("utilisateur", user);
+            
+            if (user.isAdmin()) {
+                return "redirect:/admin/reservations";
+            }
             return "profile";
         }
-        return "redirect:/utilisateur/login";
+        return "redirect:/login";
     }
-
+    
     @GetMapping("/logout")
     public String logout(HttpSession session) {
         session.invalidate();
-        return "redirect:/login";
+        return "redirect:/utilisateur/login";
     }
 }
-

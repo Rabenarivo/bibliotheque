@@ -9,27 +9,23 @@ import java.time.LocalDate;
 @Getter
 @Setter
 @Entity
-@Table(name = "historique_livre")
-public class HistoriqueLivre {
+@Table(name = "emprunt")
+public class Emprunt {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id", nullable = false)
     private Integer id;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "livre_id")
-    private Livre livre;
-
-    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "utilisateur_id")
     private Utilisateur utilisateur;
 
-    @Column(name = "date_action")
-    private LocalDate dateAction;
+    @Column(name = "date_emprunt")
+    private LocalDate dateEmprunt;
 
-    @Column(name = "type_action")
-    private String typeAction;
+    @Column(name = "date_retour")
+    private LocalDate dateRetour;
 
-    @Column(name = "description")
-    private String description;
+    @Column(name = "statut_emprunt")
+    private String statutEmprunt;
 }
