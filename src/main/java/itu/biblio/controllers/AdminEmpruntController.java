@@ -41,8 +41,14 @@ public class AdminEmpruntController {
     // Liste de tous les emprunts
     @GetMapping
     public String listEmprunts(Model model) {
+        // Détecter et mettre à jour les retards automatiquement
+        empruntService.detecterEtMettreAJourRetards();
+        
         List<EmpruntProjection> emprunts = empruntService.getAllEmpruntsWithDetails();
+        long empruntsEnRetard = empruntService.countEmpruntsEnRetard();
+        
         model.addAttribute("emprunts", emprunts);
+        model.addAttribute("empruntsEnRetard", empruntsEnRetard);
         return "admin/emprunts/list";
     }
 
@@ -231,6 +237,47 @@ public class AdminEmpruntController {
             }
 
             redirectAttributes.addFlashAttribute("success", "Livre retourné avec succès");
+            return "redirect:/admin/emprunts";
+            
+        } catch (Exception e) {
+            redirectAttributes.addFlashAttribute("error", "Erreur lors du retour: " + e.getMessage());
+            return "redirect:/admin/emprunts";
+        }
+    }
+
+    // Retour d'un livre en retard
+    @PostMapping("/{id}/return-retard")
+    public String returnBookEnRetard(@PathVariable Integer id, RedirectAttributes redirectAttributes) {
+        try {
+            Emprunt emprunt = empruntService.getEmpruntById(id).orElse(null);
+            if (emprunt == null) {
+                redirectAttributes.addFlashAttribute("error", "Emprunt non trouvé");
+                return "redirect:/admin/emprunts";
+            }
+
+            // Calculer les jours de retard
+            int joursDeRetard = empruntService.getJoursDeRetard(id);
+
+            // Mettre à jour le statut de l'emprunt
+            emprunt.setStatutEmprunt("retourne");
+            empruntService.saveEmprunt(emprunt);
+
+            // Mettre à jour les détails de l'emprunt
+            List<EmpruntDetail> details = empruntDetailsService.getEmpruntDetailsByEmpruntId(id);
+            for (EmpruntDetail detail : details) {
+                detail.setDateRetour(LocalDate.now());
+                empruntDetailsService.saveEmpruntDetails(detail);
+                
+                // Mettre à jour le statut du livre
+                livreServices.updateLivreStatus(detail.getLivre().getId(), "dispo");
+            }
+
+            String message = "Livre en retard retourné avec succès";
+            if (joursDeRetard > 0) {
+                message += " (Retard de " + joursDeRetard + " jour(s))";
+            }
+            
+            redirectAttributes.addFlashAttribute("success", message);
             return "redirect:/admin/emprunts";
             
         } catch (Exception e) {

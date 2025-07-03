@@ -13,4 +13,5 @@ public interface EmpruntProjection {
     LocalDate getDateRetour();
     String getStatutEmprunt();
     LocalDate getDateRetourEffective();
+    Integer getJoursDeRetard();
 } 
