@@ -26,5 +26,4 @@ public class HistoriqueLivre {
 
     @Column(name = "date_debut")
     private LocalDate dateDebut;
-
 }

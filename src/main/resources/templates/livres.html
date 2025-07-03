@@ -6,6 +6,12 @@
 </head>
 <body>
     <div class="container">
+
+        <div th:if="${param.error == 'not_available'}" class="alert alert-danger">
+            Le livre demandé n'est pas disponible pour la réservation.
+        </div>
+
+        
         <h1>Liste des livres disponibles</h1>
         
         <div th:if="${livres.empty}" class="alert alert-info">
@@ -32,7 +38,7 @@
                             <img th:if="${livre.image}" th:src="@{${livre.image}}" alt="Couverture du livre" class="book-cover">
                         </td>
                         <td>
-                            <a th:href="@{/envoyer_reservation/{id}(id=${livre.id})}" class="button">Reserver</a>
+                            <a th:href="@{/reservation_livre(livreId=${livre.id})}" class="button">Reserver</a>
                         </td>
                     </tr>
                 </tbody>

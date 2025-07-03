@@ -8,6 +8,7 @@ import itu.biblio.repositories.AdherantRepository;
 import itu.biblio.entities.*;
 import itu.biblio.controllers.UtilisateurController;
 import itu.biblio.projection.ListeLivreParAdherantProjection;
+import itu.biblio.projection.LivreDisponibiliteProjection;
 import itu.biblio.controllers.LivreController;
 import itu.biblio.repositories.LivreRepository;
 import itu.biblio.repositories.UtilisateurRepository;
@@ -26,5 +27,15 @@ public class LivreServices {
     public List<ListeLivreParAdherantProjection> getAllLivres(Integer id) {
         return livreRepository.findAvailableLivres(id);
     }
+
+
+    public Optional<Livre> getLivreById(Integer id) {
+        return livreRepository.findById(id);
+    }
+
+    public LivreDisponibiliteProjection getLivreDisponibiliteById(Integer livreId) {
+        return livreRepository.findLivreDisponibiliteById(livreId);
+    }
     
+
 }
