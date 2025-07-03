@@ -3,13 +3,11 @@ package itu.biblio.entities;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
-
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 
+@Entity
 @Getter
 @Setter
-@Entity
 @Table(name = "reservation")
 public class Reservation {
     @Id
@@ -25,11 +23,11 @@ public class Reservation {
     private Livre livre;
 
     @Column(name = "date_reservation")
-    private LocalDateTime dateReservation;
-
-    @Column(name = "statut")
-    private String statut;  // PENDING, CONFIRMED, CANCELLED
+    private LocalDate dateReservation;
 
     @Column(name = "date_debut")
     private LocalDate dateDebut;
+
+    @Column(name = "est_validee")
+    private Boolean estValidee = false;
 }

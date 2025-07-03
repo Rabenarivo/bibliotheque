@@ -83,7 +83,7 @@ CREATE TABLE reservation(
     livre_id INT REFERENCES livre(id),
     date_debut DATE
 );
-
+ALTER TABLE  reservation ADD COLUMN statut_reservation BOOLEAN DEFAULT 'FALSE';
 CREATE TABLE genre_livre(
     livre_id INT REFERENCES livre(id),
     genre_id INT REFERENCES genre(id)

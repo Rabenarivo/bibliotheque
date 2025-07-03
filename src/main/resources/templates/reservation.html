@@ -7,9 +7,13 @@
 <body>
     <div class="container">
         <h1>Liste des Réservations</h1>
+        
+        <!-- Message si aucune réservation n'est trouvée -->
         <div th:if="${reservations.empty}" class="alert alert-info">
             Aucune réservation trouvée.
         </div>
+        
+        <!-- Tableau des réservations -->
         <div th:if="${not reservations.empty}">
             <table class="reservation-table">
                 <thead>
@@ -21,21 +25,28 @@
                         <th>Titre Livre</th>
                         <th>Auteur Livre</th>
                         <th>Date de Réservation</th>
+                        <th>Actions</th>
                     </tr>
                 </thead>
                 <tbody>
                     <tr th:each="reservation : ${reservations}">
-                        <td th:text="${reservation.id}"></td>
-                        <td th:text="${reservation.utilisateur.nom}"></td>
-                        <td th:text="${reservation.utilisateur.prenom}"></td>
-                        <td th:text="${reservation.utilisateur.email}"></td>
-                        <td th:text="${reservation.livre.titre}"></td>
-                        <td th:text="${reservation.livre.auteur}"></td>
-                        <td th:text="${reservation.dateDebut}"></td>
+                        <td th:text="${reservation.reservationId}"></td>
+                        <td th:text="${reservation.utilisateurNom}"></td>
+                        <td th:text="${reservation.utilisateurPrenom}"></td>
+                        <td th:text="${reservation.utilisateurEmail}"></td>
+                        <td th:text="${reservation.livreTitre}"></td>
+                        <td th:text="${reservation.livreAuteur}"></td>
+                        <td th:text="${reservation.dateReservation}"></td>
+                        <td>
+                            <a th:href="@{/reservation/valide/{id}(id=${reservation.reservationId})}" class="button valide-button">Valider</a>
+                            <a th:href="@{/reservation/delete/{id}(id=${reservation.reservationId})}" class="button delete-button">Supprimer</a>
+                        </td>
                     </tr>
                 </tbody>
             </table>
         </div>
+        
+        <!-- Bouton retour -->
         <a th:href="@{/admin}" class="button">Retour</a>
     </div>
 </body>

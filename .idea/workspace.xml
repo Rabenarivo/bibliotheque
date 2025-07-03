@@ -5,28 +5,37 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="0f261079-ca1c-4c3d-8495-7878e0afbc2c" name="Changes" comment="">
+      <change beforePath="$PROJECT_DIR$/.idea/dataSources.local.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/dataSources.local.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/dataSources.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/dataSources.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/dataSources/5f2501ce-bb69-47f6-8a0e-bccfc13780f3.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/dataSources/5f2501ce-bb69-47f6-8a0e-bccfc13780f3.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/dataSources/5f2501ce-bb69-47f6-8a0e-bccfc13780f3/storage_v2/_src_/database/bibliotheque.Jy_Vaw/schema/information_schema.FNRwLQ.meta" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/dataSources/5f2501ce-bb69-47f6-8a0e-bccfc13780f3/storage_v2/_src_/database/bibliotheque.Jy_Vaw/schema/information_schema.FNRwLQ.meta" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/dataSources/5f2501ce-bb69-47f6-8a0e-bccfc13780f3/storage_v2/_src_/database/bibliotheque.Jy_Vaw/schema/pg_catalog.0S1ZNQ.meta" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/dataSources/5f2501ce-bb69-47f6-8a0e-bccfc13780f3/storage_v2/_src_/database/bibliotheque.Jy_Vaw/schema/pg_catalog.0S1ZNQ.meta" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/dataSources/5f2501ce-bb69-47f6-8a0e-bccfc13780f3/storage_v2/_src_/database/bibliotheque.Jy_Vaw/schema/public.abK9xQ.meta" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/dataSources/5f2501ce-bb69-47f6-8a0e-bccfc13780f3/storage_v2/_src_/database/bibliotheque.Jy_Vaw/schema/public.abK9xQ.meta" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/dataSources/b270e0f8-60e8-4033-a6ce-792e55450a53.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/dataSources/b270e0f8-60e8-4033-a6ce-792e55450a53/storage_v2/_src_/database/bibliotheque.Jy_Vaw.meta" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/dataSources/b270e0f8-60e8-4033-a6ce-792e55450a53/storage_v2/_src_/database/bibliotheque.Jy_Vaw/schema/information_schema.FNRwLQ.meta" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/dataSources/b270e0f8-60e8-4033-a6ce-792e55450a53/storage_v2/_src_/database/bibliotheque.Jy_Vaw/schema/information_schema.FNRwLQ.zip" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/dataSources/b270e0f8-60e8-4033-a6ce-792e55450a53/storage_v2/_src_/database/bibliotheque.Jy_Vaw/schema/pg_catalog.0S1ZNQ.meta" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/dataSources/b270e0f8-60e8-4033-a6ce-792e55450a53/storage_v2/_src_/database/bibliotheque.Jy_Vaw/schema/pg_catalog.0S1ZNQ.zip" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/dataSources/b270e0f8-60e8-4033-a6ce-792e55450a53/storage_v2/_src_/database/bibliotheque.Jy_Vaw/schema/public.abK9xQ.meta" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/jpa.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/jpa.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/itu/biblio/controllers/LivreController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/itu/biblio/controllers/LivreController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/itu/biblio/controllers/UtilisateurController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/itu/biblio/controllers/UtilisateurController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/itu/biblio/repositories/LivreRepository.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/itu/biblio/repositories/LivreRepository.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/itu/biblio/controllers/ReservationController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/itu/biblio/controllers/ReservationController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/itu/biblio/entities/Reservation.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/itu/biblio/entities/Reservation.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/itu/biblio/repositories/ReservationRepository.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/itu/biblio/repositories/ReservationRepository.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/itu/biblio/services/ReservationService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/itu/biblio/services/ReservationService.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/itu/biblio/sql/BD.sql" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/itu/biblio/sql/BD.sql" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/templates/profile.html" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/templates/profile.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/templates/formulaire_reservation.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/templates/reservation.html" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/templates/reservation.html" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/target/classes/itu/biblio/controllers/LivreController.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/itu/biblio/controllers/LivreController.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/itu/biblio/controllers/UtilisateurController.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/itu/biblio/controllers/UtilisateurController.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/itu/biblio/entities/HistoriqueLivre.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/itu/biblio/entities/HistoriqueLivre.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/itu/biblio/entities/Livre.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/itu/biblio/entities/Livre.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/itu/biblio/entities/LivreAdherant.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/itu/biblio/entities/LivreAdherant.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/itu/biblio/controllers/ReservationController.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/itu/biblio/controllers/ReservationController.class" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/target/classes/itu/biblio/entities/Reservation.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/itu/biblio/entities/Reservation.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/itu/biblio/repositories/HistoriqueLivreRepository.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/itu/biblio/repositories/HistoriqueLivreRepository.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/itu/biblio/repositories/LivreAdherantRepository.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/itu/biblio/repositories/LivreAdherantRepository.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/itu/biblio/repositories/LivreRepository.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/itu/biblio/repositories/LivreRepository.class" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/target/classes/itu/biblio/repositories/ReservationRepository.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/itu/biblio/repositories/ReservationRepository.class" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/target/classes/itu/biblio/services/ReservationService.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/itu/biblio/services/ReservationService.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/itu/biblio/services/UtilisateurServices.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/itu/biblio/services/UtilisateurServices.class" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/target/classes/itu/biblio/sql/BD.sql" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/itu/biblio/sql/BD.sql" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/templates/profile.html" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/templates/profile.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/maven-status/maven-compiler-plugin/compile/default-compile/createdFiles.lst" beforeDir="false" afterPath="$PROJECT_DIR$/target/maven-status/maven-compiler-plugin/compile/default-compile/createdFiles.lst" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/maven-status/maven-compiler-plugin/compile/default-compile/inputFiles.lst" beforeDir="false" afterPath="$PROJECT_DIR$/target/maven-status/maven-compiler-plugin/compile/default-compile/inputFiles.lst" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/templates/formulaire_reservation.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/templates/reservation.html" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/templates/reservation.html" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -65,34 +74,34 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent"><![CDATA[{
-  "keyToString": {
-    "ModuleVcsDetector.initialDetectionPerformed": "true",
-    "RequestMappingsPanelOrder0": "0",
-    "RequestMappingsPanelOrder1": "1",
-    "RequestMappingsPanelWidth0": "75",
-    "RequestMappingsPanelWidth1": "75",
-    "RunOnceActivity.ShowReadmeOnStart": "true",
-    "RunOnceActivity.git.unshallow": "true",
-    "SHARE_PROJECT_CONFIGURATION_FILES": "true",
-    "Shell Script.mvnw.executor": "Run",
-    "Spring Boot.BiblioApplication.executor": "Run",
-    "git-widget-placeholder": "admin__validation__pret",
-    "ignore.virus.scanning.warn.message": "true",
-    "last_opened_file_path": "D:/ITU/exam/bibliotheque",
-    "node.js.detected.package.eslint": "true",
-    "node.js.detected.package.tslint": "true",
-    "node.js.selected.package.eslint": "(autodetect)",
-    "node.js.selected.package.tslint": "(autodetect)",
-    "nodejs_package_manager_path": "npm",
-    "vue.rearranger.settings.migration": "true"
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;ModuleVcsDetector.initialDetectionPerformed&quot;: &quot;true&quot;,
+    &quot;RequestMappingsPanelOrder0&quot;: &quot;0&quot;,
+    &quot;RequestMappingsPanelOrder1&quot;: &quot;1&quot;,
+    &quot;RequestMappingsPanelWidth0&quot;: &quot;75&quot;,
+    &quot;RequestMappingsPanelWidth1&quot;: &quot;75&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
+    &quot;SHARE_PROJECT_CONFIGURATION_FILES&quot;: &quot;true&quot;,
+    &quot;Shell Script.mvnw.executor&quot;: &quot;Run&quot;,
+    &quot;Spring Boot.BiblioApplication.executor&quot;: &quot;Run&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;admin__validation__pret&quot;,
+    &quot;ignore.virus.scanning.warn.message&quot;: &quot;true&quot;,
+    &quot;last_opened_file_path&quot;: &quot;D:/ITU/exam/bibliotheque&quot;,
+    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
+    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
+    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
+    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
+    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
+    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
   },
-  "keyToStringList": {
-    "DatabaseDriversLRU": [
-      "postgresql"
+  &quot;keyToStringList&quot;: {
+    &quot;DatabaseDriversLRU&quot;: [
+      &quot;postgresql&quot;
     ]
   }
-}]]></component>
+}</component>
   <component name="RunManager" selected="Spring Boot.BiblioApplication">
     <configuration name="mvnw" type="ShConfigurationType">
       <option name="SCRIPT_TEXT" value="" />
@@ -140,6 +149,7 @@
       <workItem from="1751435974906" duration="2887000" />
       <workItem from="1751438991006" duration="1257000" />
       <workItem from="1751469653273" duration="7168000" />
+      <workItem from="1751531485589" duration="755000" />
     </task>
     <servers />
   </component>
