@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Livres disponibles</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+<body>
+    <div class="container">
+
+        <div th:if="${param.error == 'not_available'}" class="alert alert-danger">
+            Le livre demandé n'est pas disponible pour la réservation.
+        </div>
+
+        
+        <h1>Liste des livres disponibles</h1>
+        
+        <div th:if="${livres.empty}" class="alert alert-info">
+            Aucun livre disponible.
+        </div>
+        
+        <div th:if="${not livres.empty}">
+            <table class="book-table">
+                <thead>
+                    <tr>
+                        <th>Titre</th>
+                        <th>Auteur</th>
+                        <th>Age recommandé</th>
+                        <th>Image</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr th:each="livre : ${livres}">
+                        <td th:text="${livre.titre}"></td>
+                        <td th:text="${livre.auteur}"></td>
+                        <td th:text="${livre.age}"></td>
+                        <td>
+                            <img th:if="${livre.image}" th:src="@{${livre.image}}" alt="Couverture du livre" class="book-cover">
+                        </td>
+                        <td>
+                            <a th:href="@{/reservation_livre(livreId=${livre.id})}" class="button">Reserver</a>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        
+        <div class="nav-buttons">
+            <a th:href="@{/profile}" class="button">Retour au profil</a>
+        </div>
+    </div>
+</body>
+</html>
