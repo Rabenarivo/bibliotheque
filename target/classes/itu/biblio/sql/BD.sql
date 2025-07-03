@@ -8,18 +8,21 @@ CREATE TABLE livre(
     auteur VARCHAR(255),
     age INT,
     image VARCHAR(50),
-    est_etudiant BOOLEAN,
-    est_prof BOOLEAN,
-    est_pro BOOLEAN,
-    est_anonyme BOOLEAN
+
 );
+
+ALTER TABLE livre ADD COLUMN examplaire INT DEFAULT 1;
 
 CREATE TABLE adherant(
     id SERIAL PRIMARY KEY,
     type VARCHAR(100),
-    nbr_reservation INT,
-    nbr_livre_pret INT,
     nbr_jrs_pret INT
+);
+
+CREATE TABLE livre_adherant(
+    id SERIAL PRIMARY KEY,
+    livre_id INT REFERENCES livre(id),
+    adherant_id INT REFERENCES adherant(id)
 );
 
 CREATE TABLE genre(
@@ -107,6 +110,123 @@ VALUES
 -- On suppose que les ID générés automatiquement sont 1, 2, 3 pour les adhérents
 INSERT INTO utilisateur (nom, prenom, date_naissance, email, mdp, est_admin, id_adherant)
 VALUES 
-  ('Rakoto', 'Jean', '1980-05-15', 'jean.rakoto@example.com', 'passProf123', FALSE, 1),
-  ('Rabe', 'Sofia', '2001-11-22', 'sofia.rabe@example.com', 'passEtud456', FALSE, 2),
-  ('Andria', 'Lova', '1990-03-10', 'lova.andria@example.com', 'passPro789', TRUE, 3);
+('rajarabenarivo21@gmail.com', 'raja2004', FALSE, 1);
+
+
+
+
+INSERT INTO livre (titre, auteur, age, image,examplaire)
+VALUES 
+  ('Introduction à Java', 'John Doe', 18, 'java.jpg',3),
+  ('Bases de données avancées', 'Jane Smith', 21, 'bdd.jpg',2),
+  ('Mathématiques pour informaticiens', 'Albert Einstein', 16, 'math.jpg',4),
+  ('Design Patterns en Java', 'Gamma et al.', 25, 'design.jpg',4),
+  ('Programmation Web avec Spring', 'Rod Johnson', 20, 'spring.jpg',3);
+
+-- Insertion des relations livre_adherant
+-- Les livres sont associés à des types d'adhérents (prof, étudiant, etc.)
+INSERT INTO livre_adherant (livre_id, adherant_id)
+VALUES 
+  (1, 1),  
+  (2, 1),  
+  (3, 2),  
+  (4, 1),  
+  (5, 2),  
+  (5, 3); 
+
+SELECT livre.id, livre.titre, livre.auteur, livre.age, livre.image
+FROM livre
+JOIN livre_adherant ON livre.id = livre_adherant.livre_id
+JOIN adherant ON livre_adherant.adherant_id = adherant.id
+JOIN utilisateur ON utilisateur.id_adherant = adherant.id
+WHERE utilisateur.id = 1;
+
+
+
+
+
+
+
+INSERT INTO historique_livre (livre_id, statut_id, date_debut) VALUES
+(2, 2, '2023-09-01'),
+(2, 2, '2023-09-15');
+
+(1, 1, '2023-09-01'),
+(2, 2, '2023-09-15'),
+(3, 1, '2023-09-20');
+(2,1,'2023-10-01'),
+
+(1,1,'2024-01-01'),
+(1,1,'2024-01-02');
+(1,2,'2023-12-03');
+
+INSERT INTO statut_livre (id, nom) VALUES
+(1, 'dispo'),     
+(2, 'en_cours_de_pret');
+
+SELECT livre.id, livre.titre, livre.auteur, livre.age, livre.image
+FROM livre
+JOIN livre_adherant ON livre.id = livre_adherant.livre_id
+JOIN adherant ON livre_adherant.adherant_id = adherant.id
+JOIN utilisateur ON utilisateur.id_adherant = adherant.id
+WHERE utilisateur.id = 1;
+
+
+
+
+
+
+
+-- SELECT 
+--     l.id AS livre_id,
+--     l.titre,
+--     l.examplaire AS total_exemplaires,
+--     COUNT(CASE WHEN sl.nom = 'en_cours_de_pret' THEN hl.id END) AS exemplaires_indisponibles,
+--     (l.examplaire - COUNT(CASE WHEN sl.nom = 'en_cours_de_pret' THEN hl.id END)) AS exemplaires_disponibles
+-- FROM 
+--     livre l
+-- LEFT JOIN 
+--     historique_livre hl ON l.id = hl.livre_id
+-- LEFT JOIN 
+--     statut_livre sl ON hl.statut_id = sl.id
+-- WHERE 
+--     l.id = 1
+-- GROUP BY 
+--     l.id, l.titre, l.examplaire;
+
+
+
+SELECT 
+    l.id AS livre_id,
+    l.titre,
+    l.examplaire AS total_exemplaires,
+    COUNT(CASE WHEN sl.nom = 'en_cours_de_pret' THEN hl.id END) AS exemplaires_indisponibles,
+    (l.examplaire - COUNT(CASE WHEN sl.nom = 'en_cours_de_pret' THEN hl.id END)) AS exemplaires_disponibles
+FROM livre l
+LEFT JOIN historique_livre hl ON l.id = hl.livre_id
+LEFT JOIN statut_livre sl ON hl.statut_id = sl.id
+WHERE hl.date_debut = (
+    SELECT MAX(h.date_debut)
+    FROM historique_livre h
+    WHERE h.livre_id = l.id
+)
+GROUP BY l.id, l.titre, l.examplaire;
+
+
+
+SELECT 
+    l.id AS livre_id,
+    l.titre,
+    l.examplaire AS total_exemplaires,
+    COUNT(CASE WHEN sl.nom = 'en_cours_de_pret' THEN hl.id END) AS exemplaires_indisponibles,
+    (l.examplaire - COUNT(CASE WHEN sl.nom = 'en_cours_de_pret' THEN hl.id END)) AS exemplaires_disponibles
+FROM 
+    livre l
+LEFT JOIN 
+    historique_livre hl ON l.id = hl.livre_id
+LEFT JOIN 
+    statut_livre sl ON hl.statut_id = sl.id
+WHERE 
+    l.id = 2
+GROUP BY 
+    l.id, l.titre, l.examplaire;

@@ -46,7 +46,14 @@ public class UtilisateurServices {
     public Utilisateur login(String email, String password) {
         Optional<Utilisateur> utilisateur = utilisateurRepository.findByEmail(email);
         if (utilisateur.isPresent() && utilisateur.get().getMdp().equals(password)) {
-            return utilisateur.get();
+            Utilisateur user = utilisateur.get();
+            if (user.getEstAdmin() != null && user.getEstAdmin()) {
+                // L'utilisateur est un administrateur
+                return user;
+            } else {
+                // L'utilisateur n'est pas un administrateur
+                throw new RuntimeException("Access denied: Not an admin");
+            }
         }
         throw new RuntimeException("Invalid email or password");
     }

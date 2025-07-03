@@ -33,15 +33,14 @@ public class UtilisateurController {
     }
 
     @GetMapping("/login")
-    public String showLoginForm(Model model) {
-        model.addAttribute("utilisateur", new Utilisateur());
+    public String showLoginForm() {
         return "login"; 
     }
 
     @PostMapping("/login")
-    public String loginUtilisateur(@ModelAttribute("utilisateur") Utilisateur utilisateur, HttpSession session) {
+    public String loginUtilisateur(@RequestParam String email, @RequestParam String mdp, HttpSession session) {
         try {
-            Utilisateur loggedInUser = utilisateurServices.login(utilisateur.getEmail(), utilisateur.getMdp());
+            Utilisateur loggedInUser = utilisateurServices.login(email, mdp);
             session.setAttribute("userId", loggedInUser.getId());
             return "redirect:/profile";
         } catch (RuntimeException e) {

@@ -5,20 +5,18 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="0f261079-ca1c-4c3d-8495-7878e0afbc2c" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/dataSources.local.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/dataSources.local.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/pom.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/itu/biblio/repositories/AdherantRepository.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/itu/biblio/repositories/AdherantRepository.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/itu/biblio/services/UtilisateurServices.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/itu/biblio/services/UtilisateurServices.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/itu/biblio/sql/BD.sql" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/itu/biblio/sql/BD.sql" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/application.properties" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/application.properties" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/application.properties" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/application.properties" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/com/example/biblio/BiblioApplication.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/com/example/biblio/BiblioApplication.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/itu/biblio/App.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/itu/biblio/App.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/itu/biblio/AppConfig.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/itu/biblio/AppConfig.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/itu/biblio/HelloController$Result.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/itu/biblio/HelloController$Result.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/itu/biblio/HelloController.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/itu/biblio/HelloController.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/itu/biblio/HelloController.txt" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/itu/biblio/sql/BD.sql" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/test-classes/com/example/biblio/BiblioApplicationTests.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/test-classes/com/example/biblio/BiblioApplicationTests.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/static/css/style.css" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/static/css/style.css" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/templates/login.html" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/templates/login.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/itu/biblio/services/UtilisateurServices.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/itu/biblio/services/UtilisateurServices.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/itu/biblio/sql/BD.sql" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/itu/biblio/sql/BD.sql" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/static/css/style.css" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/static/css/style.css" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/templates/login.html" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/templates/login.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/maven-status/maven-compiler-plugin/compile/default-compile/createdFiles.lst" beforeDir="false" afterPath="$PROJECT_DIR$/target/maven-status/maven-compiler-plugin/compile/default-compile/createdFiles.lst" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/maven-status/maven-compiler-plugin/compile/default-compile/inputFiles.lst" beforeDir="false" afterPath="$PROJECT_DIR$/target/maven-status/maven-compiler-plugin/compile/default-compile/inputFiles.lst" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
