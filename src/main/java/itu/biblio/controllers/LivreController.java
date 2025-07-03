@@ -63,6 +63,9 @@ public class LivreController {
         reservation.setLivre(livre);
     
         reservation.setDateDebut(LocalDate.now());
+        reservation.setDateReservation(LocalDate.now());
+        reservation.setStatutReservation(false);
+        reservation.setEstValidee(false);
         reservationService.saveReservation(reservation);
     
         return "redirect:/livres?success";

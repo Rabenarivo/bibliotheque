@@ -2,51 +2,63 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
     <title>Livres disponibles</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" th:href="@{/css/style.css}">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
 </head>
 <body>
-    <div class="container">
-
-        <div th:if="${param.error == 'not_available'}" class="alert alert-danger">
-            Le livre demandé n'est pas disponible pour la réservation.
+    <div class="resa-container">
+        <div th:if="${param.error == 'not_available'}" class="reservation-card" style="background-color: #f8d7da; border-left: 4px solid #dc3545;">
+            <div class="reservation-header">
+                <div class="reservation-title">Erreur</div>
+                <div class="reservation-status" style="background-color: #dc3545;">Non disponible</div>
+            </div>
+            <p>Le livre demandé n'est pas disponible pour la réservation.</p>
         </div>
 
+        <h1><i class="fas fa-books"></i> Bibliothèque - Livres Disponibles</h1>
         
-        <h1>Liste des livres disponibles</h1>
-        
-        <div th:if="${livres.empty}" class="alert alert-info">
-            Aucun livre disponible.
+        <div th:if="${livres.empty}" class="reservation-card">
+            <div class="reservation-header">
+                <div class="reservation-title">Aucun livre</div>
+                <div class="reservation-status status-pending">Vide</div>
+            </div>
+            <p>Aucun livre disponible pour le moment.</p>
         </div>
         
-        <div th:if="${not livres.empty}">
-            <table class="book-table">
-                <thead>
-                    <tr>
-                        <th>Titre</th>
-                        <th>Auteur</th>
-                        <th>Age recommandé</th>
-                        <th>Image</th>
-                        <th>Actions</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr th:each="livre : ${livres}">
-                        <td th:text="${livre.titre}"></td>
-                        <td th:text="${livre.auteur}"></td>
-                        <td th:text="${livre.age}"></td>
-                        <td>
-                            <img th:if="${livre.image}" th:src="@{${livre.image}}" alt="Couverture du livre" class="book-cover">
-                        </td>
-                        <td>
-                            <a th:href="@{/reservation_livre(livreId=${livre.id})}" class="button">Reserver</a>
-                        </td>
-                    </tr>
-                </tbody>
-            </table>
+        <div th:if="${not livres.empty}" class="resa-grid">
+            <div class="resa-card" th:each="livre : ${livres}">
+                <div class="resa-image">
+                    <i class="fas fa-book-open"></i>
+                </div>
+                <div class="resa-content">
+                    <div class="resa-title" th:text="${livre.titre}"></div>
+                    <div class="resa-author" th:text="${livre.auteur}"></div>
+                    <div class="resa-info">
+                        <span class="resa-age" th:text="${livre.age + '+'}"></span>
+                        <span class="resa-availability" th:if="${livre.exemplairesDisponibles > 0}" 
+                              th:text="${livre.exemplairesDisponibles + ' exemplaire(s) disponible(s)'}"></span>
+                        <span class="resa-availability" th:if="${livre.exemplairesDisponibles <= 0}" 
+                              style="color: #e74c3c;" th:text="'Indisponible'"></span>
+                    </div>
+                    <button th:if="${livre.exemplairesDisponibles > 0}" 
+                            th:onclick="'window.location.href=\'/reservation_livre?livreId=' + ${livre.id} + '\''" 
+                            class="resa-button">
+                        <i class="fas fa-bookmark"></i> Réserver
+                    </button>
+                    <button th:if="${livre.exemplairesDisponibles <= 0}" 
+                            class="resa-button" disabled>
+                        <i class="fas fa-times"></i> Indisponible
+                    </button>
+                </div>
+            </div>
         </div>
         
         <div class="nav-buttons">
-            <a th:href="@{/profile}" class="button">Retour au profil</a>
+            <a th:href="@{/profile}" class="button">
+                <i class="fas fa-arrow-left"></i> Retour au profil
+            </a>
         </div>
     </div>
 </body>

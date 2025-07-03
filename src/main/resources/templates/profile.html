@@ -2,19 +2,47 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
     <title>Profil Utilisateur</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" th:href="@{/css/style.css}">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
 </head>
 <body>
-    <div class="container">
-        <h1>Profil Utilisateur</h1>
-        <div class="profile-info" th:if="${utilisateur}">
-            <p><strong>Nom:</strong> <span th:text="${utilisateur.nom}"></span></p>
-            <p><strong>Prénom:</strong> <span th:text="${utilisateur.prenom}"></span></p>
-            <p><strong>Email:</strong> <span th:text="${utilisateur.email}"></span></p>
-            <p><strong>Date de naissance:</strong> <span th:text="${utilisateur.dateNaissance}"></span></p>
-            <p><strong>Type d'adhérent:</strong> <span th:text="${utilisateur.idAdherant?.type}"></span></p>
+    <div class="profile-container">
+        <div class="profile-header" th:if="${utilisateur}">
+            <div class="profile-avatar">
+                <i class="fas fa-user"></i>
+            </div>
+            <div class="profile-name" th:text="${utilisateur.prenom + ' ' + utilisateur.nom}"></div>
+            <div class="profile-email" th:text="${utilisateur.email}"></div>
         </div>
-        <a href="/logout" class="button">Déconnexion</a>
+        
+        <div class="profile-stats" th:if="${utilisateur}">
+            <div class="stat-card">
+                <div class="stat-number">📚</div>
+                <div class="stat-label">Type d'adhérent</div>
+                <div class="stat-value" th:text="${utilisateur.idAdherant?.type}"></div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number">🎂</div>
+                <div class="stat-label">Date de naissance</div>
+                <div class="stat-value" th:text="${#temporals.format(utilisateur.dateNaissance, 'dd/MM/yyyy')}"></div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number">📧</div>
+                <div class="stat-label">Email</div>
+                <div class="stat-value" th:text="${utilisateur.email}"></div>
+            </div>
+        </div>
+        
+        <div class="profile-actions">
+            <a href="/livres" class="profile-btn profile-btn-primary">
+                <i class="fas fa-book"></i> Voir les Livres
+            </a>
+            <a href="/logout" class="profile-btn profile-btn-secondary">
+                <i class="fas fa-sign-out-alt"></i> Déconnexion
+            </a>
+        </div>
     </div>
 </body>
 </html>

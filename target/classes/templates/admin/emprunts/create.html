@@ -1,0 +1,378 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Admin - Nouvel Emprunt</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+    <style>
+        .admin-container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        .form-group {
+            margin-bottom: 20px;
+        }
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+        input, select {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 16px;
+        }
+        .btn {
+            padding: 12px 24px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            text-decoration: none;
+            display: inline-block;
+            margin: 5px;
+            font-size: 16px;
+        }
+        .btn-primary { background-color: #007bff; color: white; }
+        .btn-secondary { background-color: #6c757d; color: white; }
+        .btn-success { background-color: #28a745; color: white; }
+        
+        .alert {
+            padding: 15px;
+            margin-bottom: 20px;
+            border: 1px solid transparent;
+            border-radius: 4px;
+        }
+        .alert-danger { color: #721c24; background-color: #f8d7da; border-color: #f5c6cb; }
+        .alert-success { color: #155724; background-color: #d4edda; border-color: #c3e6cb; }
+        .alert-info { color: #0c5460; background-color: #d1ecf1; border-color: #bee5eb; }
+        
+        .availability-info {
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 4px;
+            font-weight: bold;
+        }
+        .available { background-color: #d4edda; color: #155724; }
+        .unavailable { background-color: #f8d7da; color: #721c24; }
+        
+        .book-access-info {
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 4px;
+            font-weight: bold;
+        }
+        .access-granted { background-color: #d4edda; color: #155724; }
+        .access-denied { background-color: #f8d7da; color: #721c24; }
+        
+        .subscription-info {
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 4px;
+            font-weight: bold;
+        }
+        .subscription-valid { background-color: #d4edda; color: #155724; }
+        .subscription-invalid { background-color: #f8d7da; color: #721c24; }
+        .subscription-warning { background-color: #fff3cd; color: #856404; }
+        
+        .form-actions {
+            margin-top: 30px;
+            text-align: center;
+        }
+        
+        .loading {
+            color: #007bff;
+            font-style: italic;
+        }
+        
+        .no-books {
+            color: #dc3545;
+            font-style: italic;
+        }
+    </style>
+</head>
+<body>
+    <div class="admin-container">
+        <h1>Créer un nouvel emprunt</h1>
+        <div class="alert alert-info">
+            <strong>💡 Information :</strong> Sélectionnez d'abord un utilisateur pour voir les livres auxquels il a accès selon son type d'adhérent et vérifier son abonnement.
+        </div>
+        
+        <!-- Messages d'alerte -->
+        <div th:if="${error}" class="alert alert-danger" th:text="${error}"></div>
+        <div th:if="${success}" class="alert alert-success" th:text="${success}"></div>
+
+        <form th:action="@{/admin/emprunts/create}" method="post" id="empruntForm">
+            <div class="form-group">
+                <label for="utilisateurId">Utilisateur *</label>
+                <select name="utilisateurId" id="utilisateurId" required onchange="loadUserBooks()">
+                    <option value="">Sélectionnez un utilisateur</option>
+                    <option th:each="utilisateur : ${utilisateurs}" 
+                            th:value="${utilisateur.id}" 
+                            th:text="${utilisateur.prenom + ' ' + utilisateur.nom + ' (' + utilisateur.email + ')'}">
+                    </option>
+                </select>
+                <div id="subscriptionInfo" class="subscription-info" style="display: none;"></div>
+                <div id="empruntsInfo" class="subscription-info" style="display: none;"></div>
+            </div>
+
+            <div class="form-group">
+                <label for="livreId">Livre *</label>
+                <select name="livreId" id="livreId" required onchange="checkAvailability()" disabled>
+                    <option value="">Sélectionnez d'abord un utilisateur</option>
+                </select>
+                <div id="availabilityInfo" class="availability-info" style="display: none;"></div>
+                <div id="accessInfo" class="book-access-info" style="display: none;"></div>
+            </div>
+
+            <div class="form-group">
+                <label for="typeEmpruntId">Type d'emprunt *</label>
+                <select name="typeEmpruntId" id="typeEmpruntId" required onchange="calculateReturnDate()">
+                    <option value="">Sélectionnez un type d'emprunt</option>
+                    <option th:each="type : ${typeEmprunts}" 
+                            th:value="${type.id}" 
+                            th:data-duree="${type.dureeJours}"
+                            th:text="${type.nom + ' (' + type.dureeJours + ' jours)'}">
+                    </option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label for="dateRetour">Date de retour *</label>
+                <input type="date" name="dateRetour" id="dateRetour" required>
+            </div>
+
+            <div class="form-actions">
+                <button type="submit" class="btn btn-primary" id="submitBtn" disabled>
+                    Créer l'emprunt
+                </button>
+                <a th:href="@{/admin/emprunts}" class="btn btn-secondary">Annuler</a>
+            </div>
+        </form>
+    </div>
+
+    <script>
+        function checkAvailability() {
+            const livreId = document.getElementById('livreId').value;
+            const availabilityInfo = document.getElementById('availabilityInfo');
+            
+            if (!livreId) {
+                availabilityInfo.style.display = 'none';
+                return;
+            }
+
+            fetch(`/admin/emprunts/check-availability/${livreId}`)
+                .then(response => response.json())
+                .then(data => {
+                    availabilityInfo.style.display = 'block';
+                    if (data.exemplairesDisponibles > 0) {
+                        availabilityInfo.className = 'availability-info available';
+                        availabilityInfo.innerHTML = `✅ Disponible: ${data.exemplairesDisponibles} exemplaire(s) sur ${data.totalExemplaires}`;
+                    } else {
+                        availabilityInfo.className = 'availability-info unavailable';
+                        availabilityInfo.innerHTML = `❌ Non disponible: ${data.exemplairesIndisponibles} exemplaire(s) emprunté(s) sur ${data.totalExemplaires}`;
+                    }
+                    validateForm();
+                })
+                .catch(error => {
+                    console.error('Erreur lors de la vérification:', error);
+                    availabilityInfo.style.display = 'block';
+                    availabilityInfo.className = 'availability-info unavailable';
+                    availabilityInfo.innerHTML = '❌ Erreur lors de la vérification de disponibilité';
+                });
+        }
+
+        function loadUserBooks() {
+            const userId = document.getElementById('utilisateurId').value;
+            const livreSelect = document.getElementById('livreId');
+            const accessInfo = document.getElementById('accessInfo');
+            const subscriptionInfo = document.getElementById('subscriptionInfo');
+            
+            // Réinitialiser le select des livres
+            livreSelect.innerHTML = '<option value="" class="loading">Chargement des livres...</option>';
+            livreSelect.disabled = true;
+            accessInfo.style.display = 'none';
+            subscriptionInfo.style.display = 'none';
+            
+            if (!userId) {
+                livreSelect.innerHTML = '<option value="">Sélectionnez d\'abord un utilisateur</option>';
+                livreSelect.disabled = true;
+                return;
+            }
+
+            // Vérifier l'abonnement de l'utilisateur
+            checkUserSubscription(userId);
+            
+            // Vérifier les emprunts de l'utilisateur
+            checkUserEmprunts(userId);
+
+            fetch(`/admin/emprunts/user-books/${userId}`)
+                .then(response => response.json())
+                .then(data => {
+                    livreSelect.innerHTML = '<option value="">Sélectionnez un livre</option>';
+                    
+                    if (data.length === 0) {
+                        livreSelect.innerHTML = '<option value="" class="no-books">Aucun livre accessible pour cet utilisateur</option>';
+                        livreSelect.disabled = true;
+                        accessInfo.style.display = 'block';
+                        accessInfo.className = 'book-access-info access-denied';
+                        accessInfo.innerHTML = '❌ Cet utilisateur n\'a accès à aucun livre';
+                    } else {
+                        data.forEach(book => {
+                            const option = document.createElement('option');
+                            option.value = book.id;
+                            option.textContent = `${book.titre} par ${book.auteur}`;
+                            livreSelect.appendChild(option);
+                        });
+                        livreSelect.disabled = false;
+                        
+                        // Afficher le nombre de livres accessibles
+                        accessInfo.style.display = 'block';
+                        accessInfo.className = 'book-access-info access-granted';
+                        accessInfo.innerHTML = `✅ ${data.length} livre(s) accessible(s) pour cet utilisateur`;
+                    }
+                    validateForm();
+                })
+                .catch(error => {
+                    console.error('Erreur lors du chargement des livres:', error);
+                    livreSelect.innerHTML = '<option value="">Erreur lors du chargement</option>';
+                    livreSelect.disabled = true;
+                    accessInfo.style.display = 'block';
+                    accessInfo.className = 'book-access-info access-denied';
+                    accessInfo.innerHTML = '❌ Erreur lors du chargement des livres';
+                });
+        }
+
+        function checkUserSubscription(userId) {
+            const subscriptionInfo = document.getElementById('subscriptionInfo');
+            
+            fetch(`/admin/emprunts/check-subscription/${userId}`)
+                .then(response => response.json())
+                .then(data => {
+                    subscriptionInfo.style.display = 'block';
+                    
+                    if (data.canEmprunter) {
+                        if (data.message.includes('⚠️')) {
+                            subscriptionInfo.className = 'subscription-info subscription-warning';
+                        } else {
+                            subscriptionInfo.className = 'subscription-info subscription-valid';
+                        }
+                    } else {
+                        subscriptionInfo.className = 'subscription-info subscription-invalid';
+                    }
+                    
+                    subscriptionInfo.innerHTML = data.message;
+                    validateForm();
+                })
+                .catch(error => {
+                    console.error('Erreur lors de la vérification de l\'abonnement:', error);
+                    subscriptionInfo.style.display = 'block';
+                    subscriptionInfo.className = 'subscription-info subscription-invalid';
+                    subscriptionInfo.innerHTML = '❌ Erreur lors de la vérification de l\'abonnement';
+                });
+        }
+        
+        function checkUserEmprunts(userId) {
+            const empruntsInfo = document.getElementById('empruntsInfo');
+            
+            fetch(`/admin/emprunts/check-emprunts/${userId}`)
+                .then(response => response.json())
+                .then(data => {
+                    empruntsInfo.style.display = 'block';
+                    
+                    if (data.canEmprunterPlus) {
+                        if (data.message.includes('⚠️')) {
+                            empruntsInfo.className = 'subscription-info subscription-warning';
+                        } else {
+                            empruntsInfo.className = 'subscription-info subscription-valid';
+                        }
+                    } else {
+                        empruntsInfo.className = 'subscription-info subscription-invalid';
+                    }
+                    
+                    empruntsInfo.innerHTML = data.message;
+                    validateForm();
+                })
+                .catch(error => {
+                    console.error('Erreur lors de la vérification des emprunts:', error);
+                    empruntsInfo.style.display = 'block';
+                    empruntsInfo.className = 'subscription-info subscription-invalid';
+                    empruntsInfo.innerHTML = '❌ Erreur lors de la vérification des emprunts';
+                });
+        }
+
+        function checkUserAccess() {
+            const userId = document.getElementById('utilisateurId').value;
+            const livreId = document.getElementById('livreId').value;
+            const accessInfo = document.getElementById('accessInfo');
+            
+            if (!userId || !livreId) {
+                accessInfo.style.display = 'none';
+                return;
+            }
+
+            // L'accès est déjà vérifié lors du chargement des livres
+            // Cette fonction peut être utilisée pour des vérifications supplémentaires si nécessaire
+        }
+
+        function calculateReturnDate() {
+            const typeSelect = document.getElementById('typeEmpruntId');
+            const dateRetourInput = document.getElementById('dateRetour');
+            
+            if (typeSelect.value) {
+                const selectedOption = typeSelect.options[typeSelect.selectedIndex];
+                const dureeText = selectedOption.text.match(/\((\d+) jours\)/);
+                if (dureeText) {
+                    const duree = parseInt(dureeText[1]);
+                    const dateRetour = new Date();
+                    dateRetour.setDate(dateRetour.getDate() + duree);
+                    dateRetourInput.value = dateRetour.toISOString().split('T')[0];
+                }
+            }
+        }
+
+        function validateForm() {
+            const submitBtn = document.getElementById('submitBtn');
+            const userId = document.getElementById('utilisateurId').value;
+            const livreId = document.getElementById('livreId').value;
+            const typeId = document.getElementById('typeEmpruntId').value;
+            const dateRetour = document.getElementById('dateRetour').value;
+            
+            const availabilityInfo = document.getElementById('availabilityInfo');
+            const subscriptionInfo = document.getElementById('subscriptionInfo');
+            const empruntsInfo = document.getElementById('empruntsInfo');
+            const livreSelect = document.getElementById('livreId');
+            
+            // Vérifier si un livre est sélectionné et si le select n'est pas désactivé
+            const livreSelected = livreId && !livreSelect.disabled;
+            const isAvailable = availabilityInfo.style.display === 'none' || 
+                               availabilityInfo.className.includes('available');
+            const hasValidSubscription = subscriptionInfo.style.display === 'none' || 
+                                       subscriptionInfo.className.includes('subscription-valid') ||
+                                       subscriptionInfo.className.includes('subscription-warning');
+            const canEmprunterPlus = empruntsInfo.style.display === 'none' || 
+                                   empruntsInfo.className.includes('subscription-valid') ||
+                                   empruntsInfo.className.includes('subscription-warning');
+            
+            const canSubmit = userId && livreSelected && typeId && dateRetour && isAvailable && hasValidSubscription && canEmprunterPlus;
+            
+            submitBtn.disabled = !canSubmit;
+        }
+
+        // Écouteurs d'événements pour la validation en temps réel
+        document.getElementById('utilisateurId').addEventListener('change', validateForm);
+        document.getElementById('livreId').addEventListener('change', validateForm);
+        document.getElementById('typeEmpruntId').addEventListener('change', validateForm);
+        document.getElementById('dateRetour').addEventListener('change', validateForm);
+        
+        // Réinitialiser les livres quand l'utilisateur change
+        document.getElementById('utilisateurId').addEventListener('change', function() {
+            // Réinitialiser la sélection de livre
+            document.getElementById('livreId').value = '';
+            document.getElementById('availabilityInfo').style.display = 'none';
+        });
+    </script>
+</body>
+</html> 

@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Admin - Modifier l'Emprunt</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+    <style>
+        .admin-container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        .form-group {
+            margin-bottom: 20px;
+        }
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+        input, select {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 16px;
+        }
+        .btn {
+            padding: 12px 24px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            text-decoration: none;
+            display: inline-block;
+            margin: 5px;
+            font-size: 16px;
+        }
+        .btn-primary { background-color: #007bff; color: white; }
+        .btn-secondary { background-color: #6c757d; color: white; }
+        .btn-warning { background-color: #ffc107; color: black; }
+        
+        .alert {
+            padding: 15px;
+            margin-bottom: 20px;
+            border: 1px solid transparent;
+            border-radius: 4px;
+        }
+        .alert-danger { color: #721c24; background-color: #f8d7da; border-color: #f5c6cb; }
+        .alert-success { color: #155724; background-color: #d4edda; border-color: #c3e6cb; }
+        
+        .availability-info {
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 4px;
+            font-weight: bold;
+        }
+        .available { background-color: #d4edda; color: #155724; }
+        .unavailable { background-color: #f8d7da; color: #721c24; }
+        
+        .book-access-info {
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 4px;
+            font-weight: bold;
+        }
+        .access-granted { background-color: #d4edda; color: #155724; }
+        .access-denied { background-color: #f8d7da; color: #721c24; }
+        
+        .form-actions {
+            margin-top: 30px;
+            text-align: center;
+        }
+        
+        .current-info {
+            background-color: #e7f3ff;
+            border: 1px solid #b3d9ff;
+            border-radius: 4px;
+            padding: 15px;
+            margin-bottom: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div class="admin-container">
+        <h1>Modifier l'emprunt</h1>
+        
+        <!-- Messages d'alerte -->
+        <div th:if="${error}" class="alert alert-danger" th:text="${error}"></div>
+        <div th:if="${success}" class="alert alert-success" th:text="${success}"></div>
+
+        <!-- Informations actuelles -->
+        <div class="current-info">
+            <h3>Informations actuelles</h3>
+            <p><strong>Utilisateur actuel:</strong> <span th:text="${emprunt.utilisateur.prenom + ' ' + emprunt.utilisateur.nom}"></span></p>
+            <p><strong>Date d'emprunt:</strong> <span th:text="${#temporals.format(emprunt.dateEmprunt, 'dd/MM/yyyy')}"></span></p>
+            <p><strong>Statut actuel:</strong> <span th:text="${emprunt.statutEmprunt}"></span></p>
+        </div>
+
+        <form th:action="@{/admin/emprunts/{id}/edit(id=${emprunt.id})}" method="post" id="empruntForm">
+            <div class="form-group">
+                <label for="utilisateurId">Utilisateur *</label>
+                <select name="utilisateurId" id="utilisateurId" required onchange="checkUserAccess()">
+                    <option value="">Sélectionnez un utilisateur</option>
+                    <option th:each="utilisateur : ${utilisateurs}" 
+                            th:value="${utilisateur.id}" 
+                            th:selected="${utilisateur.id == emprunt.utilisateur.id}"
+                            th:text="${utilisateur.prenom + ' ' + utilisateur.nom + ' (' + utilisateur.email + ')'}">
+                    </option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label for="livreId">Livre *</label>
+                <select name="livreId" id="livreId" required onchange="checkAvailability()">
+                    <option value="">Sélectionnez un livre</option>
+                    <option th:each="livre : ${livres}" 
+                            th:value="${livre.id}" 
+                            th:selected="${livre.id == emprunt.livre.id}"
+                            th:text="${livre.titre + ' par ' + livre.auteur}">
+                    </option>
+                </select>
+                <div id="availabilityInfo" class="availability-info" style="display: none;"></div>
+                <div id="accessInfo" class="book-access-info" style="display: none;"></div>
+            </div>
+
+            <div class="form-group">
+                <label for="dateRetour">Date de retour *</label>
+                <input type="date" name="dateRetour" id="dateRetour" 
+                       th:value="${#temporals.format(emprunt.dateRetour, 'yyyy-MM-dd')}" required>
+            </div>
+
+            <div class="form-group">
+                <label for="statutEmprunt">Statut de l'emprunt *</label>
+                <select name="statutEmprunt" id="statutEmprunt" required>
+                    <option value="en_cours" th:selected="${emprunt.statutEmprunt == 'en_cours'}">En cours</option>
+                    <option value="retourne" th:selected="${emprunt.statutEmprunt == 'retourne'}">Retourné</option>
+                    <option value="retard" th:selected="${emprunt.statutEmprunt == 'retard'}">En retard</option>
+                </select>
+            </div>
+
+            <div class="form-actions">
+                <button type="submit" class="btn btn-warning" id="submitBtn">
+                    Modifier l'emprunt
+                </button>
+                <a th:href="@{/admin/emprunts/{id}(id=${emprunt.id})}" class="btn btn-secondary">Annuler</a>
+            </div>
+        </form>
+    </div>
+
+    <script>
+        function checkAvailability() {
+            const livreId = document.getElementById('livreId').value;
+            const availabilityInfo = document.getElementById('availabilityInfo');
+            
+            if (!livreId) {
+                availabilityInfo.style.display = 'none';
+                return;
+            }
+
+            fetch(`/admin/emprunts/check-availability/${livreId}`)
+                .then(response => response.json())
+                .then(data => {
+                    availabilityInfo.style.display = 'block';
+                    if (data.exemplairesDisponibles > 0) {
+                        availabilityInfo.className = 'availability-info available';
+                        availabilityInfo.innerHTML = `✅ Disponible: ${data.exemplairesDisponibles} exemplaire(s) sur ${data.totalExemplaires}`;
+                    } else {
+                        availabilityInfo.className = 'availability-info unavailable';
+                        availabilityInfo.innerHTML = `❌ Non disponible: ${data.exemplairesIndisponibles} exemplaire(s) emprunté(s) sur ${data.totalExemplaires}`;
+                    }
+                })
+                .catch(error => {
+                    console.error('Erreur lors de la vérification:', error);
+                    availabilityInfo.style.display = 'block';
+                    availabilityInfo.className = 'availability-info unavailable';
+                    availabilityInfo.innerHTML = '❌ Erreur lors de la vérification de disponibilité';
+                });
+        }
+
+        function checkUserAccess() {
+            const userId = document.getElementById('utilisateurId').value;
+            const livreId = document.getElementById('livreId').value;
+            const accessInfo = document.getElementById('accessInfo');
+            
+            if (!userId || !livreId) {
+                accessInfo.style.display = 'none';
+                return;
+            }
+
+            fetch(`/admin/emprunts/user-books/${userId}`)
+                .then(response => response.json())
+                .then(data => {
+                    accessInfo.style.display = 'block';
+                    const hasAccess = data.some(book => book.id == livreId);
+                    
+                    if (hasAccess) {
+                        accessInfo.className = 'book-access-info access-granted';
+                        accessInfo.innerHTML = '✅ L\'utilisateur a accès à ce livre';
+                    } else {
+                        accessInfo.className = 'book-access-info access-denied';
+                        accessInfo.innerHTML = '❌ L\'utilisateur n\'a pas accès à ce livre';
+                    }
+                })
+                .catch(error => {
+                    console.error('Erreur lors de la vérification d\'accès:', error);
+                    accessInfo.style.display = 'block';
+                    accessInfo.className = 'book-access-info access-denied';
+                    accessInfo.innerHTML = '❌ Erreur lors de la vérification d\'accès';
+                });
+        }
+
+        // Vérifier l'accès quand le livre change
+        document.getElementById('livreId').addEventListener('change', function() {
+            setTimeout(checkUserAccess, 100);
+        });
+    </script>
+</body>
+</html> 

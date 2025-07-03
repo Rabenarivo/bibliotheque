@@ -2,52 +2,64 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
     <title>Liste des Réservations</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" th:href="@{/css/style.css}">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
 </head>
 <body>
-    <div class="container">
-        <h1>Liste des Réservations</h1>
+    <div class="reservation-container">
+        <h1><i class="fas fa-list"></i> Liste des Réservations</h1>
         
         <!-- Message si aucune réservation n'est trouvée -->
-        <div th:if="${reservations.empty}" class="alert alert-info">
-            Aucune réservation trouvée.
+        <div th:if="${reservations.empty}" class="reservation-card">
+            <div class="reservation-header">
+                <div class="reservation-title">Aucune réservation</div>
+                <div class="reservation-status status-pending">Vide</div>
+            </div>
+            <p>Aucune réservation trouvée.</p>
         </div>
         
-        <!-- Tableau des réservations -->
+        <!-- Cartes des réservations -->
         <div th:if="${not reservations.empty}">
-            <table class="reservation-table">
-                <thead>
-                    <tr>
-                        <th>ID Réservation</th>
-                        <th>Nom Utilisateur</th>
-                        <th>Prénom Utilisateur</th>
-                        <th>Email Utilisateur</th>
-                        <th>Titre Livre</th>
-                        <th>Auteur Livre</th>
-                        <th>Date de Réservation</th>
-                        <th>Actions</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr th:each="reservation : ${reservations}">
-                        <td th:text="${reservation.reservationId}"></td>
-                        <td th:text="${reservation.utilisateurNom}"></td>
-                        <td th:text="${reservation.utilisateurPrenom}"></td>
-                        <td th:text="${reservation.utilisateurEmail}"></td>
-                        <td th:text="${reservation.livreTitre}"></td>
-                        <td th:text="${reservation.livreAuteur}"></td>
-                        <td th:text="${reservation.dateReservation}"></td>
-                        <td>
-                            <a th:href="@{/reservation/valide/{id}(id=${reservation.reservationId})}" class="button valide-button">Valider</a>
-                            <a th:href="@{/reservation/delete/{id}(id=${reservation.reservationId})}" class="button delete-button">Supprimer</a>
-                        </td>
-                    </tr>
-                </tbody>
-            </table>
+            <div class="reservation-card" th:each="reservation : ${reservations}">
+                <div class="reservation-header">
+                    <div class="reservation-title" th:text="${reservation.livreTitre}"></div>
+                    <div class="reservation-status status-pending">En attente</div>
+                </div>
+                
+                <div class="reservation-details">
+                    <p><strong><i class="fas fa-user"></i> Utilisateur:</strong> 
+                       <span th:text="${reservation.utilisateurPrenom + ' ' + reservation.utilisateurNom}"></span></p>
+                    <p><strong><i class="fas fa-envelope"></i> Email:</strong> 
+                       <span th:text="${reservation.utilisateurEmail}"></span></p>
+                    <p><strong><i class="fas fa-book"></i> Livre:</strong> 
+                       <span th:text="${reservation.livreTitre}"></span></p>
+                    <p><strong><i class="fas fa-user-edit"></i> Auteur:</strong> 
+                       <span th:text="${reservation.livreAuteur}"></span></p>
+                    <p><strong><i class="fas fa-calendar"></i> Date de réservation:</strong> 
+                       <span th:text="${reservation.dateReservation}"></span></p>
+                </div>
+                
+                <div class="reservation-actions">
+                    <a th:href="@{/reservation/valide/{id}(id=${reservation.reservationId})}" 
+                       class="button">
+                        <i class="fas fa-check"></i> Valider
+                    </a>
+                    <a th:href="@{/reservation/delete/{id}(id=${reservation.reservationId})}" 
+                       class="button" style="background-color: #e74c3c;">
+                        <i class="fas fa-trash"></i> Supprimer
+                    </a>
+                </div>
+            </div>
         </div>
         
         <!-- Bouton retour -->
-        <a th:href="@{/admin}" class="button">Retour</a>
+        <div class="nav-buttons">
+            <a th:href="@{/admin}" class="button">
+                <i class="fas fa-arrow-left"></i> Retour
+            </a>
+        </div>
     </div>
 </body>
 </html>

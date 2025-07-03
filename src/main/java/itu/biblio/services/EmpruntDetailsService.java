@@ -1,6 +1,6 @@
 package itu.biblio.services;
 
-import itu.biblio.entities.EmpruntDetails;
+import itu.biblio.entities.EmpruntDetail;
 import itu.biblio.repositories.EmpruntDetailsRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -13,19 +13,23 @@ public class EmpruntDetailsService {
     @Autowired
     private EmpruntDetailsRepository empruntDetailsRepository;
 
-    public List<EmpruntDetails> getAllEmpruntDetails() {
+    public List<EmpruntDetail> getAllEmpruntDetails() {
         return empruntDetailsRepository.findAll();
     }
 
-    public Optional<EmpruntDetails> getEmpruntDetailsById(Integer id) {
+    public Optional<EmpruntDetail> getEmpruntDetailsById(Integer id) {
         return empruntDetailsRepository.findById(id);
     }
 
-    public EmpruntDetails saveEmpruntDetails(EmpruntDetails empruntDetails) {
+    public EmpruntDetail saveEmpruntDetails(EmpruntDetail empruntDetails) {
         return empruntDetailsRepository.save(empruntDetails);
     }
 
     public void deleteEmpruntDetails(Integer id) {
         empruntDetailsRepository.deleteById(id);
+    }
+
+    public List<EmpruntDetail> getEmpruntDetailsByEmpruntId(Integer empruntId) {
+        return empruntDetailsRepository.findByEmpruntId(empruntId);
     }
 } 
