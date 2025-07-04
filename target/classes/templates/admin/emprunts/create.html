@@ -103,17 +103,20 @@
         <!-- Messages d'alerte -->
         <div th:if="${error}" class="alert alert-danger" th:text="${error}"></div>
         <div th:if="${success}" class="alert alert-success" th:text="${success}"></div>
+        <div th:if="${#lists.isEmpty(utilisateurs)}" class="alert alert-danger">Aucun utilisateur disponible. Veuillez en créer un avant d'ajouter un emprunt.</div>
+        <div th:if="${#lists.isEmpty(typeEmprunts)}" class="alert alert-danger">Aucun type d'emprunt disponible. Veuillez en créer un avant d'ajouter un emprunt.</div>
 
         <form th:action="@{/admin/emprunts/create}" method="post" id="empruntForm">
             <div class="form-group">
                 <label for="utilisateurId">Utilisateur *</label>
-                <select name="utilisateurId" id="utilisateurId" required onchange="loadUserBooks()">
+                <select name="utilisateurId" id="utilisateurId" required onchange="onUserChange()" th:disabled="${#lists.isEmpty(utilisateurs)}">
                     <option value="">Sélectionnez un utilisateur</option>
                     <option th:each="utilisateur : ${utilisateurs}" 
                             th:value="${utilisateur.id}" 
                             th:text="${utilisateur.prenom + ' ' + utilisateur.nom + ' (' + utilisateur.email + ')'}">
                     </option>
                 </select>
+                <div id="penaliteAlert" class="alert alert-danger" style="display:none;"></div>
                 <div id="subscriptionInfo" class="subscription-info" style="display: none;"></div>
                 <div id="empruntsInfo" class="subscription-info" style="display: none;"></div>
             </div>
@@ -129,7 +132,7 @@
 
             <div class="form-group">
                 <label for="typeEmpruntId">Type d'emprunt *</label>
-                <select name="typeEmpruntId" id="typeEmpruntId" required onchange="calculateReturnDate()">
+                <select name="typeEmpruntId" id="typeEmpruntId" required onchange="calculateReturnDate()" th:disabled="${#lists.isEmpty(typeEmprunts)}">
                     <option value="">Sélectionnez un type d'emprunt</option>
                     <option th:each="type : ${typeEmprunts}" 
                             th:value="${type.id}" 
@@ -140,7 +143,11 @@
             </div>
 
             <div class="form-group">
-                <label for="dateRetour">Date de retour *</label>
+                <label for="dateEmprunt">Date d'emprunt *</label>
+                <input type="date" name="dateEmprunt" id="dateEmprunt" required>
+            </div>
+            <div class="form-group">
+                <label for="dateRetour">Date de retour prévue</label>
                 <input type="date" name="dateRetour" id="dateRetour" required>
             </div>
 
@@ -154,6 +161,36 @@
     </div>
 
     <script>
+        // Map JS des pénalités (utilisateurId -> joursRestants)
+        const penalites = /*[[${penalites}]]*/ {};
+
+        function onUserChange() {
+            const userId = document.getElementById('utilisateurId').value;
+            const penaliteAlert = document.getElementById('penaliteAlert');
+            const submitBtn = document.getElementById('submitBtn');
+            if (userId && penalites[userId] && penalites[userId] > 0) {
+                penaliteAlert.style.display = 'block';
+                penaliteAlert.innerHTML = `Cet utilisateur est sous pénalité et ne peut pas emprunter de livre pendant encore <b>${penalites[userId]}</b> jour(s).`;
+                submitBtn.disabled = true;
+            } else {
+                penaliteAlert.style.display = 'none';
+                submitBtn.disabled = false;
+            }
+            // Appel des autres fonctions si besoin (ex: loadUserBooks)
+            loadUserBooks();
+        }
+
+        // Désactive le bouton si pas d'utilisateur ou pas de type d'emprunt
+        document.addEventListener('DOMContentLoaded', function() {
+            onUserChange();
+            const utilisateurs = /*[[${utilisateurs}]]*/ [];
+            const typeEmprunts = /*[[${typeEmprunts}]]*/ [];
+            const submitBtn = document.getElementById('submitBtn');
+            if (!utilisateurs.length || !typeEmprunts.length) {
+                submitBtn.disabled = true;
+            }
+        });
+
         function checkAvailability() {
             const livreId = document.getElementById('livreId').value;
             const availabilityInfo = document.getElementById('availabilityInfo');
@@ -333,12 +370,32 @@
             }
         }
 
+        // Sécurisation de l'ajout des event listeners
+        const utilisateurIdEl = document.getElementById('utilisateurId');
+        const livreIdEl = document.getElementById('livreId');
+        const typeEmpruntIdEl = document.getElementById('typeEmpruntId');
+        const dateRetourEl = document.getElementById('dateRetour');
+
+        if (utilisateurIdEl) utilisateurIdEl.addEventListener('change', validateForm);
+        if (livreIdEl) livreIdEl.addEventListener('change', validateForm);
+        if (typeEmpruntIdEl) typeEmpruntIdEl.addEventListener('change', validateForm);
+        if (dateRetourEl) dateRetourEl.addEventListener('change', validateForm);
+
+        // Réinitialiser les livres quand l'utilisateur change
+        if (utilisateurIdEl && livreIdEl) {
+            utilisateurIdEl.addEventListener('change', function() {
+                livreIdEl.value = '';
+                const availabilityInfo = document.getElementById('availabilityInfo');
+                if (availabilityInfo) availabilityInfo.style.display = 'none';
+            });
+        }
+
         function validateForm() {
             const submitBtn = document.getElementById('submitBtn');
-            const userId = document.getElementById('utilisateurId').value;
-            const livreId = document.getElementById('livreId').value;
-            const typeId = document.getElementById('typeEmpruntId').value;
-            const dateRetour = document.getElementById('dateRetour').value;
+            const userId = utilisateurIdEl ? utilisateurIdEl.value : '';
+            const livreId = livreIdEl ? livreIdEl.value : '';
+            const typeId = typeEmpruntIdEl ? typeEmpruntIdEl.value : '';
+            const dateRetour = dateRetourEl ? dateRetourEl.value : '';
             
             const availabilityInfo = document.getElementById('availabilityInfo');
             const subscriptionInfo = document.getElementById('subscriptionInfo');
@@ -360,19 +417,6 @@
             
             submitBtn.disabled = !canSubmit;
         }
-
-        // Écouteurs d'événements pour la validation en temps réel
-        document.getElementById('utilisateurId').addEventListener('change', validateForm);
-        document.getElementById('livreId').addEventListener('change', validateForm);
-        document.getElementById('typeEmpruntId').addEventListener('change', validateForm);
-        document.getElementById('dateRetour').addEventListener('change', validateForm);
-        
-        // Réinitialiser les livres quand l'utilisateur change
-        document.getElementById('utilisateurId').addEventListener('change', function() {
-            // Réinitialiser la sélection de livre
-            document.getElementById('livreId').value = '';
-            document.getElementById('availabilityInfo').style.display = 'none';
-        });
     </script>
 </body>
 </html> 

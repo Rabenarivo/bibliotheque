@@ -13,6 +13,8 @@ import itu.biblio.repositories.HistoriqueLivreRepository;
 import itu.biblio.repositories.StatutLivreRepository;
 import itu.biblio.repositories.UtilisateurRepository;
 import itu.biblio.repositories.LivreRepository;
+import itu.biblio.repositories.PenaliteRepository;
+import itu.biblio.entities.Penalite;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
@@ -32,6 +34,7 @@ public class ReservationService {
     private final StatutLivreRepository statutLivreRepository;
     private final UtilisateurRepository utilisateurRepository;
     private final LivreRepository livreRepository;
+    private final PenaliteRepository penaliteRepository;
 
     public ReservationService(ReservationRepository reservationRepository,
                             EmpruntRepository empruntRepository,
@@ -39,7 +42,8 @@ public class ReservationService {
                             HistoriqueLivreRepository historiqueLivreRepository,
                             StatutLivreRepository statutLivreRepository,
                             UtilisateurRepository utilisateurRepository,
-                            LivreRepository livreRepository) {
+                            LivreRepository livreRepository,
+                            PenaliteRepository penaliteRepository) {
         this.reservationRepository = reservationRepository;
         this.empruntRepository = empruntRepository;
         this.empruntDetailsRepository = empruntDetailsRepository;
@@ -47,6 +51,7 @@ public class ReservationService {
         this.statutLivreRepository = statutLivreRepository;
         this.utilisateurRepository = utilisateurRepository;
         this.livreRepository = livreRepository;
+        this.penaliteRepository = penaliteRepository;
     }
 
     // Save a reservation
@@ -85,6 +90,18 @@ public class ReservationService {
         // 1. Récupérer la réservation
         Reservation reservation = reservationRepository.findById(reservationId)
             .orElseThrow(() -> new IllegalArgumentException("Invalid reservation ID"));
+
+        // 1.1 Vérifier la pénalité de l'utilisateur
+        Integer utilisateurId = reservation.getUtilisateur().getId();
+        java.time.LocalDate now = java.time.LocalDate.now();
+        java.util.List<Penalite> penalites = penaliteRepository.findByUtilisateurId(utilisateurId);
+        for (Penalite p : penalites) {
+            java.time.LocalDate fin = p.getDateDebut().plusDays(p.getNbJourSanction());
+            if (now.isBefore(fin)) {
+                int joursRestants = (int) java.time.temporal.ChronoUnit.DAYS.between(now, fin);
+                throw new IllegalStateException("L'utilisateur est sous pénalité et ne peut pas emprunter pendant encore " + joursRestants + " jour(s).");
+            }
+        }
 
         // 2. Créer l'emprunt
         Emprunt emprunt = new Emprunt();

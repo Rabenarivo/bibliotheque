@@ -133,22 +133,24 @@
                         <a th:href="@{/admin/emprunts/{id}(id=${emprunt.empruntId})}" class="btn btn-info">Détails</a>
                         <a th:href="@{/admin/emprunts/{id}/edit(id=${emprunt.empruntId})}" class="btn btn-warning">Modifier</a>
                         
-                        <!-- Bouton Retourner pour les emprunts en cours -->
+                        <!-- Formulaire Retourner pour les emprunts en cours -->
                         <form th:if="${emprunt.statutEmprunt == 'en_cours'}" 
                               th:action="@{/admin/emprunts/{id}/return(id=${emprunt.empruntId})}" 
                               method="post" style="display: inline;">
+                            <input type="date" name="dateRetour" required style="width: 140px;">
                             <button type="submit" class="btn btn-success" 
-                                    onclick="return confirm('Confirmer le retour de ce livre ?')">
+                                    onclick="return confirm('Confirmer le retour de ce livre à la date sélectionnée ?')">
                                 Retourner
                             </button>
                         </form>
                         
-                        <!-- Bouton Retourner pour les emprunts en retard -->
+                        <!-- Formulaire Retourner pour les emprunts en retard -->
                         <form th:if="${emprunt.statutEmprunt == 'retard'}" 
                               th:action="@{/admin/emprunts/{id}/return-retard(id=${emprunt.empruntId})}" 
                               method="post" style="display: inline;">
+                            <input type="date" name="dateRetour" required style="width: 140px;">
                             <button type="submit" class="btn btn-danger" 
-                                    onclick="return confirm('Confirmer le retour de ce livre en retard ?')">
+                                    onclick="return confirm('Confirmer le retour de ce livre en retard à la date sélectionnée ?')">
                                 Retourner (Retard)
                             </button>
                         </form>
