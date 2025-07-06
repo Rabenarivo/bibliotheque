@@ -4,7 +4,6 @@ import itu.biblio.entities.Emprunt;
 import itu.biblio.entities.Penalite;
 import itu.biblio.entities.Utilisateur;
 import itu.biblio.repositories.PenaliteRepository;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
@@ -16,7 +15,7 @@ public class PenaliteService {
 
     private final PenaliteRepository penaliteRepository;
 
-    @Autowired
+
     public PenaliteService(PenaliteRepository penaliteRepository) {
         this.penaliteRepository = penaliteRepository;
     }

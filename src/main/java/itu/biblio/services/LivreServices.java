@@ -1,19 +1,15 @@
 package itu.biblio.services;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import itu.biblio.repositories.AdherantRepository;
 import itu.biblio.repositories.HistoriqueLivreRepository;
 import itu.biblio.repositories.StatutLivreRepository;
 
 import itu.biblio.entities.*;
-import itu.biblio.controllers.UtilisateurController;
 import itu.biblio.projection.ListeLivreParAdherantProjection;
 import itu.biblio.projection.LivreDisponibiliteProjection;
-import itu.biblio.controllers.LivreController;
 import itu.biblio.repositories.LivreRepository;
-import itu.biblio.repositories.UtilisateurRepository;
+
 
 import java.time.LocalDate;
 import java.util.List;

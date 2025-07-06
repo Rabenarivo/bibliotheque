@@ -23,7 +23,7 @@ import java.util.List;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import ch.qos.logback.core.model.Model;
+
 
 @Service
 public class ReservationService {
@@ -32,7 +32,6 @@ public class ReservationService {
     private final EmpruntDetailsRepository empruntDetailsRepository;
     private final HistoriqueLivreRepository historiqueLivreRepository;
     private final StatutLivreRepository statutLivreRepository;
-    private final UtilisateurRepository utilisateurRepository;
     private final LivreRepository livreRepository;
     private final PenaliteRepository penaliteRepository;
 
@@ -49,7 +48,6 @@ public class ReservationService {
         this.empruntDetailsRepository = empruntDetailsRepository;
         this.historiqueLivreRepository = historiqueLivreRepository;
         this.statutLivreRepository = statutLivreRepository;
-        this.utilisateurRepository = utilisateurRepository;
         this.livreRepository = livreRepository;
         this.penaliteRepository = penaliteRepository;
     }

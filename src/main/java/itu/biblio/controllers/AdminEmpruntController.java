@@ -14,8 +14,8 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
 import java.util.List;
+import java.util.Map;
 
 @Controller
 @RequestMapping("/admin/emprunts")
@@ -62,11 +62,11 @@ public class AdminEmpruntController {
         try {
             List<Utilisateur> utilisateurs = utilisateurServices.getAllUtilisateurs();
             List<TypeEmprunt> typeEmprunts = typeEmpruntService.getAllTypeEmprunts();
-            java.util.Map<Integer, Integer> penalites = new java.util.HashMap<>();
-            java.time.LocalDate now = java.time.LocalDate.now();
+            Map<Integer, Integer> penalites = new java.util.HashMap<>();
+            LocalDate now = java.time.LocalDate.now();
             for (Utilisateur u : utilisateurs) {
-                List<itu.biblio.entities.Penalite> userPenalites = penaliteService.getPenalitesByUtilisateur(u.getId());
-                for (itu.biblio.entities.Penalite p : userPenalites) {
+                List<Penalite> userPenalites = penaliteService.getPenalitesByUtilisateur(u.getId());
+                for (Penalite p : userPenalites) {
                     java.time.LocalDate fin = p.getDateDebut().plusDays(p.getNbJourSanction());
                     if (now.isBefore(fin)) {
                         int joursRestants = (int) java.time.temporal.ChronoUnit.DAYS.between(now, fin);

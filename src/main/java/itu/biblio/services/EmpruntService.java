@@ -47,10 +47,7 @@ public class EmpruntService {
         return empruntRepository.countEmpruntsEnRetard();
     }
 
-    /**
-     * Détecte et met à jour les emprunts en retard
-     * Change le statut des emprunts en retard de "en_cours" vers "retard"
-     */
+//retard
     public void detecterEtMettreAJourRetards() {
         List<Emprunt> empruntsEnCours = empruntRepository.findByStatutEmpruntIn(List.of("en_cours", "En cours"));
         LocalDate aujourdhui = LocalDate.now();
@@ -63,16 +60,12 @@ public class EmpruntService {
         }
     }
 
-    /**
-     * Retourne les emprunts en retard
-     */
+//get_reatard
     public List<Emprunt> getEmpruntsEnRetard() {
         return empruntRepository.findByStatutEmprunt("retard");
     }
 
-    /**
-     * Retourne le nombre de jours de retard pour un emprunt
-     */
+//nbr_jours_reatard
     public int getJoursDeRetard(Integer empruntId) {
         Optional<Emprunt> empruntOpt = empruntRepository.findById(empruntId);
         if (empruntOpt.isPresent()) {
@@ -87,9 +80,7 @@ public class EmpruntService {
         return 0;
     }
 
-    /**
-     * Vérifie si un emprunt est en retard
-     */
+//emprunt_retard
     public boolean isEmpruntEnRetard(Integer empruntId) {
         return getJoursDeRetard(empruntId) > 0;
     }

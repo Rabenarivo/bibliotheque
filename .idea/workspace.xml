@@ -5,56 +5,10 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="0f261079-ca1c-4c3d-8495-7878e0afbc2c" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/src/main/java/itu/biblio/entities/GenreLivre.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/itu/biblio/entities/Penalite.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/itu/biblio/entities/Penalite.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/com/example/biblio/BiblioApplication.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/com/example/biblio/BiblioApplication.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/itu/biblio/App.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/itu/biblio/App.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/itu/biblio/AppConfig.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/itu/biblio/AppConfig.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/itu/biblio/BibliothequeApplication.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/itu/biblio/BibliothequeApplication.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/itu/biblio/HelloController$Result.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/itu/biblio/HelloController$Result.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/itu/biblio/HelloController.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/itu/biblio/HelloController.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/itu/biblio/controllers/AdminAbonnementController$AbonnementInfo.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/itu/biblio/controllers/AdminAbonnementController$AbonnementInfo.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/itu/biblio/controllers/AdminAbonnementController.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/itu/biblio/controllers/AdminAbonnementController.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/itu/biblio/controllers/AdminDashboardController.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/itu/biblio/controllers/AdminDashboardController.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/itu/biblio/controllers/AdminEmpruntController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/itu/biblio/controllers/AdminEmpruntController.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/target/classes/itu/biblio/controllers/AdminEmpruntController$AbonnementInfo.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/itu/biblio/controllers/AdminEmpruntController$AbonnementInfo.class" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/target/classes/itu/biblio/controllers/AdminEmpruntController$EmpruntsInfo.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/itu/biblio/controllers/AdminEmpruntController$EmpruntsInfo.class" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/target/classes/itu/biblio/controllers/AdminEmpruntController.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/itu/biblio/controllers/AdminEmpruntController.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/itu/biblio/controllers/LivreController.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/itu/biblio/controllers/LivreController.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/itu/biblio/controllers/ReservationController.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/itu/biblio/controllers/ReservationController.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/itu/biblio/controllers/UtilisateurController.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/itu/biblio/controllers/UtilisateurController.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/itu/biblio/entities/Abonnement.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/itu/biblio/entities/Abonnement.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/itu/biblio/entities/Adherant.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/itu/biblio/entities/Adherant.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/itu/biblio/entities/Emprunt.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/itu/biblio/entities/Emprunt.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/itu/biblio/entities/EmpruntDetail.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/itu/biblio/entities/EmpruntDetail.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/itu/biblio/entities/Genre.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/itu/biblio/entities/Genre.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/itu/biblio/entities/HistoriqueLivre.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/itu/biblio/entities/HistoriqueLivre.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/itu/biblio/entities/Livre.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/itu/biblio/entities/Livre.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/itu/biblio/entities/LivreAdherant.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/itu/biblio/entities/LivreAdherant.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/itu/biblio/entities/Penalite.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/itu/biblio/entities/Penalite.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/itu/biblio/entities/Reservation.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/itu/biblio/entities/Reservation.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/itu/biblio/entities/StatutLivre.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/itu/biblio/entities/StatutLivre.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/itu/biblio/entities/TypeEmprunt.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/itu/biblio/entities/TypeEmprunt.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/itu/biblio/entities/Utilisateur.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/itu/biblio/entities/Utilisateur.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/itu/biblio/repositories/AbonnementRepository.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/itu/biblio/repositories/AbonnementRepository.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/itu/biblio/repositories/AdherantRepository.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/itu/biblio/repositories/AdherantRepository.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/itu/biblio/repositories/EmpruntDetailsRepository.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/itu/biblio/repositories/EmpruntDetailsRepository.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/itu/biblio/repositories/EmpruntRepository.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/itu/biblio/repositories/EmpruntRepository.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/itu/biblio/repositories/GenreRepository.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/itu/biblio/repositories/GenreRepository.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/itu/biblio/repositories/HistoriqueLivreRepository.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/itu/biblio/repositories/HistoriqueLivreRepository.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/itu/biblio/repositories/LivreAdherantRepository.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/itu/biblio/repositories/LivreAdherantRepository.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/itu/biblio/repositories/LivreRepository.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/itu/biblio/repositories/LivreRepository.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/itu/biblio/repositories/ReservationRepository.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/itu/biblio/repositories/ReservationRepository.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/itu/biblio/repositories/StatutLivreRepository.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/itu/biblio/repositories/StatutLivreRepository.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/itu/biblio/repositories/TypeEmpruntRepository.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/itu/biblio/repositories/TypeEmpruntRepository.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/itu/biblio/repositories/UtilisateurRepository.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/itu/biblio/repositories/UtilisateurRepository.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/itu/biblio/services/AbonnementService.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/itu/biblio/services/AbonnementService.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/itu/biblio/services/EmpruntDetailsService.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/itu/biblio/services/EmpruntDetailsService.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/itu/biblio/services/EmpruntService.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/itu/biblio/services/EmpruntService.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/itu/biblio/services/LivreServices.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/itu/biblio/services/LivreServices.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/itu/biblio/services/ReservationService.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/itu/biblio/services/ReservationService.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/itu/biblio/services/TypeEmpruntService.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/itu/biblio/services/TypeEmpruntService.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/itu/biblio/services/UtilisateurServices.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/itu/biblio/services/UtilisateurServices.class" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -171,6 +125,7 @@
       <workItem from="1751531485589" duration="755000" />
       <workItem from="1751580832516" duration="2471000" />
       <workItem from="1751608478940" duration="552000" />
+      <workItem from="1751701491285" duration="16000" />
     </task>
     <servers />
   </component>
