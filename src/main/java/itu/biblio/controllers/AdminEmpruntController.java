@@ -45,7 +45,6 @@ public class AdminEmpruntController {
     // Liste de tous les emprunts
     @GetMapping
     public String listEmprunts(Model model) {
-        // Détecter et mettre à jour les retards automatiquement
         empruntService.detecterEtMettreAJourRetards();
         
         List<EmpruntProjection> emprunts = empruntService.getAllEmpruntsWithDetails();
@@ -97,7 +96,6 @@ public class AdminEmpruntController {
                                @RequestParam String dateRetour,
                                RedirectAttributes redirectAttributes) {
         try {
-            // Vérifier l'abonnement de l'utilisateur jusqu'à la date de retour
             LocalDate dateEmpruntParsed = LocalDate.parse(dateEmprunt);
             LocalDate dateRetourParsed = LocalDate.parse(dateRetour);
             if (!abonnementService.canEmprunterUntil(utilisateurId, dateRetourParsed)) {
@@ -105,13 +103,11 @@ public class AdminEmpruntController {
                 redirectAttributes.addFlashAttribute("error", "L'utilisateur ne peut pas emprunter jusqu'au " + dateRetourParsed.format(java.time.format.DateTimeFormatter.ofPattern("dd/MM/yyyy")) + ": " + messageAbonnement);
                 return "redirect:/admin/emprunts/create";
             }
-            // Vérifier si l'utilisateur peut emprunter plus de livres
             if (!abonnementService.canEmprunterPlus(utilisateurId)) {
                 String messageEmprunts = abonnementService.getMessageEmprunts(utilisateurId);
                 redirectAttributes.addFlashAttribute("error", "L'utilisateur ne peut pas emprunter plus de livres: " + messageEmprunts);
                 return "redirect:/admin/emprunts/create";
             }
-            // Vérifier si l'utilisateur peut accéder au livre
             List<ListeLivreParAdherantProjection> livresAccessibles = livreServices.getAllLivres(utilisateurId);
             boolean livreAccessible = livresAccessibles.stream()
                 .anyMatch(livre -> livre.getId().equals(livreId));
@@ -119,13 +115,11 @@ public class AdminEmpruntController {
                 redirectAttributes.addFlashAttribute("error", "L'utilisateur n'a pas accès à ce livre");
                 return "redirect:/admin/emprunts/create";
             }
-            // Vérifier la disponibilité réelle du livre (emprunts + réservations)
             LivreDisponibiliteProjection disponibilite = livreServices.getLivreDisponibiliteReelleById(livreId);
             if (disponibilite == null || disponibilite.getExemplairesDisponibles() <= 0) {
                 redirectAttributes.addFlashAttribute("error", "Le livre n'est pas disponible (tous les exemplaires sont empruntés ou réservés)");
                 return "redirect:/admin/emprunts/create";
             }
-            // Vérifier la pénalité côté serveur
             List<itu.biblio.entities.Penalite> userPenalites = penaliteService.getPenalitesByUtilisateur(utilisateurId);
             LocalDate now = dateEmpruntParsed;
             for (itu.biblio.entities.Penalite p : userPenalites) {
@@ -136,7 +130,6 @@ public class AdminEmpruntController {
                     return "redirect:/admin/emprunts/create";
                 }
             }
-            // Créer l'emprunt
             Emprunt emprunt = new Emprunt();
             Utilisateur utilisateur = new Utilisateur();
             utilisateur.setId(utilisateurId);
@@ -145,7 +138,6 @@ public class AdminEmpruntController {
             emprunt.setDateRetour(dateRetourParsed);
             emprunt.setStatutEmprunt("en_cours");
             Emprunt savedEmprunt = empruntService.saveEmprunt(emprunt);
-            // Créer les détails de l'emprunt
             EmpruntDetail empruntDetail = new EmpruntDetail();
             empruntDetail.setEmprunt(savedEmprunt);
             Livre livre = new Livre();
@@ -153,10 +145,10 @@ public class AdminEmpruntController {
             empruntDetail.setLivre(livre);
             empruntDetail.setDateDebut(dateEmpruntParsed);
             empruntDetail.setDateFin(dateRetourParsed);
-            empruntDetail.setDateRetour(null); // Sera mis à jour lors du retour
+            empruntDetail.setDateRetour(null);
             empruntDetailsService.saveEmpruntDetails(empruntDetail);
-            // Mettre à jour le statut du livre
             livreServices.updateLivreStatus(livreId, "en_cours_de_pret");
+            abonnementService.diminuerQuota(utilisateurId);
             redirectAttributes.addFlashAttribute("success", "Emprunt créé avec succès");
             return "redirect:/admin/emprunts";
         } catch (Exception e) {
@@ -210,7 +202,7 @@ public class AdminEmpruntController {
                 return "redirect:/admin/emprunts";
             }
 
-            // Vérifier si l'utilisateur peut accéder au livre
+
             List<ListeLivreParAdherantProjection> livresAccessibles = livreServices.getAllLivres(utilisateurId);
             boolean livreAccessible = livresAccessibles.stream()
                 .anyMatch(livre -> livre.getId().equals(livreId));
@@ -220,7 +212,6 @@ public class AdminEmpruntController {
                 return "redirect:/admin/emprunts/" + id + "/edit";
             }
 
-            // Mettre à jour l'emprunt
             Utilisateur utilisateur = new Utilisateur();
             utilisateur.setId(utilisateurId);
             emprunt.setUtilisateur(utilisateur);
@@ -249,29 +240,30 @@ public class AdminEmpruntController {
             }
 
             LocalDate dateRetour = LocalDate.parse(dateRetourStr);
-            // Mettre à jour le statut de l'emprunt
+
             emprunt.setStatutEmprunt("retourne");
             empruntService.saveEmprunt(emprunt);
 
-            // Mettre à jour les détails de l'emprunt et appliquer la pénalité par livre en retard
             List<EmpruntDetail> details = empruntDetailsService.getEmpruntDetailsByEmpruntId(id);
             int totalPenaliteJours = 0;
             int totalLivresRetard = 0;
             for (EmpruntDetail detail : details) {
                 detail.setDateRetour(dateRetour);
                 empruntDetailsService.saveEmpruntDetails(detail);
-                // Vérifier le retard pour chaque livre
+
                 if (detail.getDateFin() != null && dateRetour.isAfter(detail.getDateFin())) {
                     penaliteService.applyPenalty(emprunt.getUtilisateur().getId(), emprunt.getId(), 5);
                     totalPenaliteJours += 5;
                     totalLivresRetard++;
-                    // Mettre à jour le statut du livre à 'retard' (id=3)
+
                     livreServices.updateLivreStatusById(detail.getLivre().getId(), 3);
                 } else {
-                    // Mettre à jour le statut du livre normalement
+
                     livreServices.updateLivreStatus(detail.getLivre().getId(), "dispo");
                 }
             }
+
+            abonnementService.augmenterQuota(emprunt.getUtilisateur().getId());
 
             String message = "Livre retourné avec succès";
             if (totalLivresRetard > 0) {
@@ -297,21 +289,21 @@ public class AdminEmpruntController {
 
             LocalDate dateRetour = LocalDate.parse(dateRetourStr);
 
-            // Calculer les jours de retard
             int joursDeRetard = empruntService.getJoursDeRetard(id);
 
-            // Mettre à jour le statut de l'emprunt
             emprunt.setStatutEmprunt("retourne");
             empruntService.saveEmprunt(emprunt);
 
-            // Mettre à jour les détails de l'emprunt
+
             List<EmpruntDetail> details = empruntDetailsService.getEmpruntDetailsByEmpruntId(id);
             for (EmpruntDetail detail : details) {
                 detail.setDateRetour(dateRetour);
                 empruntDetailsService.saveEmpruntDetails(detail);
-                // Mettre à jour le statut du livre
+
                 livreServices.updateLivreStatus(detail.getLivre().getId(), "dispo");
             }
+
+            abonnementService.augmenterQuota(emprunt.getUtilisateur().getId());
 
             String message = "Livre en retard retourné avec succès";
             if (joursDeRetard > 0) {
@@ -325,7 +317,7 @@ public class AdminEmpruntController {
         }
     }
 
-    // Suppression d'un emprunt
+
     @PostMapping("/{id}/delete")
     @Transactional
     public String deleteEmprunt(@PathVariable Integer id, RedirectAttributes redirectAttributes) {
@@ -336,20 +328,22 @@ public class AdminEmpruntController {
                 return "redirect:/admin/emprunts";
             }
 
-            // Supprimer les pénalités associées à cet emprunt
+
             List<Penalite> penalites = penaliteService.getPenalitesByEmprunt(id);
             for (Penalite penalite : penalites) {
                 penaliteService.deletePenalite(penalite.getId());
             }
 
-            // Supprimer les détails de l'emprunt
+
             List<EmpruntDetail> details = empruntDetailsService.getEmpruntDetailsByEmpruntId(id);
             for (EmpruntDetail detail : details) {
-                // Remettre le livre en statut disponible si l'emprunt était en cours
+
                 if ("en_cours".equals(emprunt.getStatutEmprunt()) || "En cours".equals(emprunt.getStatutEmprunt())) {
                     livreServices.updateLivreStatus(detail.getLivre().getId(), "dispo");
+
+                    abonnementService.augmenterQuota(emprunt.getUtilisateur().getId());
                 }
-                // Supprimer le détail
+
                 empruntDetailsService.deleteEmpruntDetails(detail.getId());
             }
 
@@ -365,7 +359,7 @@ public class AdminEmpruntController {
         }
     }
 
-    // API pour vérifier la disponibilité d'un livre
+
     @GetMapping("/check-availability/{livreId}")
     @ResponseBody
     public ResponseEntity<?> checkAvailability(@PathVariable Integer livreId) {
@@ -376,12 +370,11 @@ public class AdminEmpruntController {
             }
             return ResponseEntity.ok(projection);
         } catch (Exception e) {
-            e.printStackTrace(); // ou log.error(...)
+            e.printStackTrace();
             return ResponseEntity.status(500).body(java.util.Collections.singletonMap("message", "Erreur lors de la vérification de disponibilité"));
         }
     }
 
-    // API pour obtenir les livres accessibles à un utilisateur
     @GetMapping("/user-books/{userId}")
     @ResponseBody
     public ResponseEntity<?> getUserBooks(@PathVariable Integer userId) {
@@ -389,7 +382,7 @@ public class AdminEmpruntController {
             List<ListeLivreParAdherantProjection> livres = livreServices.getAllLivres(userId);
             return ResponseEntity.ok(livres);
         } catch (Exception e) {
-            e.printStackTrace(); // ou log.error(...)
+            e.printStackTrace();
             return ResponseEntity.status(500).body(java.util.Collections.singletonMap("message", "Erreur lors du chargement des livres"));
         }
     }
@@ -403,7 +396,7 @@ public class AdminEmpruntController {
             String message = abonnementService.getMessageAbonnement(userId);
             return ResponseEntity.ok(new AbonnementInfo(canEmprunter, message));
         } catch (Exception e) {
-            e.printStackTrace(); // ou log.error(...)
+            e.printStackTrace();
             return ResponseEntity.status(500).body(new AbonnementInfo(false, "Erreur lors de la vérification de l'abonnement"));
         }
     }
@@ -416,8 +409,21 @@ public class AdminEmpruntController {
             String message = abonnementService.getMessageEmprunts(userId);
             return ResponseEntity.ok(new EmpruntsInfo(canEmprunterPlus, message));
         } catch (Exception e) {
-            e.printStackTrace(); // ou log.error(...)
+            e.printStackTrace();
             return ResponseEntity.status(500).body(new EmpruntsInfo(false, "Erreur lors de la vérification des emprunts"));
+        }
+    }
+    
+    @GetMapping("/check-quota/{userId}")
+    @ResponseBody
+    public ResponseEntity<?> checkQuota(@PathVariable Integer userId) {
+        try {
+            boolean canEmprunter = abonnementService.canEmprunterPlus(userId);
+            String message = abonnementService.getMessageEmprunts(userId);
+            return ResponseEntity.ok(new QuotaInfo(canEmprunter, message));
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResponseEntity.status(500).body(new QuotaInfo(false, "Erreur lors de la vérification du quota"));
         }
     }
 
@@ -464,6 +470,33 @@ public class AdminEmpruntController {
 
         public void setCanEmprunterPlus(boolean canEmprunterPlus) {
             this.canEmprunterPlus = canEmprunterPlus;
+        }
+
+        public String getMessage() {
+            return message;
+        }
+
+        public void setMessage(String message) {
+            this.message = message;
+        }
+    }
+    
+
+    public static class QuotaInfo {
+        private boolean canEmprunter;
+        private String message;
+
+        public QuotaInfo(boolean canEmprunter, String message) {
+            this.canEmprunter = canEmprunter;
+            this.message = message;
+        }
+
+        public boolean isCanEmprunter() {
+            return canEmprunter;
+        }
+
+        public void setCanEmprunter(boolean canEmprunter) {
+            this.canEmprunter = canEmprunter;
         }
 
         public String getMessage() {

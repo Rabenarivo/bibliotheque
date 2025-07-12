@@ -21,6 +21,9 @@ public class ReservationController {
     
     @Autowired
     private TypeEmpruntService typeEmpruntService;
+    
+    @Autowired
+    private itu.biblio.services.AbonnementService abonnementService;
 
     @GetMapping
     public String showReservations(Model model) {
@@ -34,7 +37,6 @@ public class ReservationController {
 
     @GetMapping("/validate-form")
     public String showValidationForm(@RequestParam Integer reservationId, Model model) {
-        // Récupérer les détails de la réservation
         ReservationProjection reservation = reservationService.getReservationById(reservationId);
         model.addAttribute("reservation", reservation);
         model.addAttribute("typeEmprunts", typeEmpruntService.getAllTypeEmprunts());
@@ -47,7 +49,6 @@ public class ReservationController {
                                     @RequestParam @DateTimeFormat(pattern = "yyyy-MM-dd") String dateRetour,
                                     Model model) {
         try {
-            // Validation de la date
             LocalDate dateRetourLD = LocalDate.parse(dateRetour);
             if (dateRetourLD.isBefore(LocalDate.now())) {
                 throw new IllegalArgumentException("La date de retour ne peut pas être dans le passé");

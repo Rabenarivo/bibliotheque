@@ -100,7 +100,6 @@
             <strong>💡 Information :</strong> Sélectionnez d'abord un utilisateur pour voir les livres auxquels il a accès selon son type d'adhérent et vérifier son abonnement.
         </div>
         
-        <!-- Messages d'alerte -->
         <div th:if="${error}" class="alert alert-danger" th:text="${error}"></div>
         <div th:if="${success}" class="alert alert-success" th:text="${success}"></div>
         <div th:if="${#lists.isEmpty(utilisateurs)}" class="alert alert-danger">Aucun utilisateur disponible. Veuillez en créer un avant d'ajouter un emprunt.</div>
@@ -119,6 +118,7 @@
                 <div id="penaliteAlert" class="alert alert-danger" style="display:none;"></div>
                 <div id="subscriptionInfo" class="subscription-info" style="display: none;"></div>
                 <div id="empruntsInfo" class="subscription-info" style="display: none;"></div>
+                <div id="quotaInfo" class="subscription-info" style="display: none;"></div>
             </div>
 
             <div class="form-group">
@@ -161,7 +161,6 @@
     </div>
 
     <script>
-        // Map JS des pénalités (utilisateurId -> joursRestants)
         const penalites = /*[[${penalites}]]*/ {};
 
         function onUserChange() {
@@ -176,11 +175,9 @@
                 penaliteAlert.style.display = 'none';
                 submitBtn.disabled = false;
             }
-            // Appel des autres fonctions si besoin (ex: loadUserBooks)
             loadUserBooks();
         }
 
-        // Désactive le bouton si pas d'utilisateur ou pas de type d'emprunt
         document.addEventListener('DOMContentLoaded', function() {
             onUserChange();
             const utilisateurs = /*[[${utilisateurs}]]*/ [];
@@ -239,11 +236,9 @@
                 return;
             }
 
-            // Vérifier l'abonnement de l'utilisateur
             checkUserSubscription(userId);
-            
-            // Vérifier les emprunts de l'utilisateur
             checkUserEmprunts(userId);
+            checkUserQuota(userId);
 
             fetch(`/admin/emprunts/user-books/${userId}`)
                 .then(response => response.json())
@@ -252,24 +247,23 @@
                     
                     if (data.length === 0) {
                         livreSelect.innerHTML = '<option value="" class="no-books">Aucun livre accessible pour cet utilisateur</option>';
-                        livreSelect.disabled = true;
-                        accessInfo.style.display = 'block';
-                        accessInfo.className = 'book-access-info access-denied';
-                        accessInfo.innerHTML = '❌ Cet utilisateur n\'a accès à aucun livre';
-                    } else {
-                        data.forEach(book => {
-                            const option = document.createElement('option');
-                            option.value = book.id;
-                            option.textContent = `${book.titre} par ${book.auteur}`;
-                            livreSelect.appendChild(option);
-                        });
-                        livreSelect.disabled = false;
-                        
-                        // Afficher le nombre de livres accessibles
-                        accessInfo.style.display = 'block';
-                        accessInfo.className = 'book-access-info access-granted';
-                        accessInfo.innerHTML = `✅ ${data.length} livre(s) accessible(s) pour cet utilisateur`;
-                    }
+                                            livreSelect.disabled = true;
+                    accessInfo.style.display = 'block';
+                    accessInfo.className = 'book-access-info access-denied';
+                    accessInfo.innerHTML = '❌ Cet utilisateur n\'a accès à aucun livre';
+                } else {
+                    data.forEach(book => {
+                        const option = document.createElement('option');
+                        option.value = book.id;
+                        option.textContent = `${book.titre} par ${book.auteur}`;
+                        livreSelect.appendChild(option);
+                    });
+                    livreSelect.disabled = false;
+                    
+                    accessInfo.style.display = 'block';
+                    accessInfo.className = 'book-access-info access-granted';
+                    accessInfo.innerHTML = `✅ ${data.length} livre(s) accessible(s) pour cet utilisateur`;
+                }
                     validateForm();
                 })
                 .catch(error => {
@@ -339,6 +333,35 @@
                     empruntsInfo.innerHTML = '❌ Erreur lors de la vérification des emprunts';
                 });
         }
+        
+        function checkUserQuota(userId) {
+            const quotaInfo = document.getElementById('quotaInfo');
+            
+            fetch(`/admin/emprunts/check-quota/${userId}`)
+                .then(response => response.json())
+                .then(data => {
+                    quotaInfo.style.display = 'block';
+                    
+                    if (data.canEmprunter) {
+                        if (data.message.includes('⚠️')) {
+                            quotaInfo.className = 'subscription-info subscription-warning';
+                        } else {
+                            quotaInfo.className = 'subscription-info subscription-valid';
+                        }
+                    } else {
+                        quotaInfo.className = 'subscription-info subscription-invalid';
+                    }
+                    
+                    quotaInfo.innerHTML = data.message;
+                    validateForm();
+                })
+                .catch(error => {
+                    console.error('Erreur lors de la vérification du quota:', error);
+                    quotaInfo.style.display = 'block';
+                    quotaInfo.className = 'subscription-info subscription-invalid';
+                    quotaInfo.innerHTML = '❌ Erreur lors de la vérification du quota';
+                });
+        }
 
         function checkUserAccess() {
             const userId = document.getElementById('utilisateurId').value;
@@ -349,9 +372,6 @@
                 accessInfo.style.display = 'none';
                 return;
             }
-
-            // L'accès est déjà vérifié lors du chargement des livres
-            // Cette fonction peut être utilisée pour des vérifications supplémentaires si nécessaire
         }
 
         function calculateReturnDate() {
@@ -370,7 +390,6 @@
             }
         }
 
-        // Sécurisation de l'ajout des event listeners
         const utilisateurIdEl = document.getElementById('utilisateurId');
         const livreIdEl = document.getElementById('livreId');
         const typeEmpruntIdEl = document.getElementById('typeEmpruntId');
@@ -381,7 +400,6 @@
         if (typeEmpruntIdEl) typeEmpruntIdEl.addEventListener('change', validateForm);
         if (dateRetourEl) dateRetourEl.addEventListener('change', validateForm);
 
-        // Réinitialiser les livres quand l'utilisateur change
         if (utilisateurIdEl && livreIdEl) {
             utilisateurIdEl.addEventListener('change', function() {
                 livreIdEl.value = '';
@@ -400,9 +418,9 @@
             const availabilityInfo = document.getElementById('availabilityInfo');
             const subscriptionInfo = document.getElementById('subscriptionInfo');
             const empruntsInfo = document.getElementById('empruntsInfo');
+            const quotaInfo = document.getElementById('quotaInfo');
             const livreSelect = document.getElementById('livreId');
             
-            // Vérifier si un livre est sélectionné et si le select n'est pas désactivé
             const livreSelected = livreId && !livreSelect.disabled;
             const isAvailable = availabilityInfo.style.display === 'none' || 
                                availabilityInfo.className.includes('available');
@@ -412,8 +430,11 @@
             const canEmprunterPlus = empruntsInfo.style.display === 'none' || 
                                    empruntsInfo.className.includes('subscription-valid') ||
                                    empruntsInfo.className.includes('subscription-warning');
+            const hasValidQuota = quotaInfo.style.display === 'none' || 
+                                 quotaInfo.className.includes('subscription-valid') ||
+                                 quotaInfo.className.includes('subscription-warning');
             
-            const canSubmit = userId && livreSelected && typeId && dateRetour && isAvailable && hasValidSubscription && canEmprunterPlus;
+            const canSubmit = userId && livreSelected && typeId && dateRetour && isAvailable && hasValidSubscription && canEmprunterPlus && hasValidQuota;
             
             submitBtn.disabled = !canSubmit;
         }

@@ -15,6 +15,7 @@ import itu.biblio.repositories.UtilisateurRepository;
 import itu.biblio.repositories.LivreRepository;
 import itu.biblio.repositories.PenaliteRepository;
 import itu.biblio.entities.Penalite;
+import itu.biblio.services.AbonnementService;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
@@ -34,6 +35,7 @@ public class ReservationService {
     private final StatutLivreRepository statutLivreRepository;
     private final LivreRepository livreRepository;
     private final PenaliteRepository penaliteRepository;
+    private final AbonnementService abonnementService;
 
     public ReservationService(ReservationRepository reservationRepository,
                             EmpruntRepository empruntRepository,
@@ -42,7 +44,8 @@ public class ReservationService {
                             StatutLivreRepository statutLivreRepository,
                             UtilisateurRepository utilisateurRepository,
                             LivreRepository livreRepository,
-                            PenaliteRepository penaliteRepository) {
+                            PenaliteRepository penaliteRepository,
+                            AbonnementService abonnementService) {
         this.reservationRepository = reservationRepository;
         this.empruntRepository = empruntRepository;
         this.empruntDetailsRepository = empruntDetailsRepository;
@@ -50,6 +53,7 @@ public class ReservationService {
         this.statutLivreRepository = statutLivreRepository;
         this.livreRepository = livreRepository;
         this.penaliteRepository = penaliteRepository;
+        this.abonnementService = abonnementService;
     }
 
     // Save a reservation
@@ -85,11 +89,9 @@ public class ReservationService {
 
     @Transactional
     public void validateReservationAndCreateEmprunt(Integer reservationId, Integer typeEmpruntId, String dateRetour) {
-        // 1. Récupérer la réservation
         Reservation reservation = reservationRepository.findById(reservationId)
             .orElseThrow(() -> new IllegalArgumentException("Invalid reservation ID"));
 
-        // 1.1 Vérifier la pénalité de l'utilisateur
         Integer utilisateurId = reservation.getUtilisateur().getId();
         java.time.LocalDate now = java.time.LocalDate.now();
         java.util.List<Penalite> penalites = penaliteRepository.findByUtilisateurId(utilisateurId);
@@ -101,15 +103,15 @@ public class ReservationService {
             }
         }
 
-        // 2. Créer l'emprunt
         Emprunt emprunt = new Emprunt();
         emprunt.setUtilisateur(reservation.getUtilisateur());
         emprunt.setDateEmprunt(LocalDate.now());
         emprunt.setDateRetour(LocalDate.parse(dateRetour, DateTimeFormatter.ofPattern("yyyy-MM-dd")));
         emprunt.setStatutEmprunt("En cours");
         emprunt = empruntRepository.save(emprunt);
+        
+        abonnementService.diminuerQuota(reservation.getUtilisateur().getId());
 
-        // 3. Créer les détails d'emprunt
         EmpruntDetail empruntDetail = new EmpruntDetail();
         empruntDetail.setEmprunt(emprunt);
         empruntDetail.setLivre(reservation.getLivre());
@@ -117,7 +119,6 @@ public class ReservationService {
         empruntDetail.setDateFin(LocalDate.parse(dateRetour, DateTimeFormatter.ofPattern("yyyy-MM-dd")));
         empruntDetailsRepository.save(empruntDetail);
 
-        // 4. Mettre à jour l'historique du livre
         HistoriqueLivre historiqueLivre = new HistoriqueLivre();
         historiqueLivre.setLivre(reservation.getLivre());
         historiqueLivre.setUtilisateur(reservation.getUtilisateur());
@@ -126,13 +127,11 @@ public class ReservationService {
         historiqueLivre.setDescription("Livre emprunté via validation de réservation");
         historiqueLivreRepository.save(historiqueLivre);
 
-        // 5. Mettre à jour le statut du livre (statut_id = 2 pour "Emprunté")
         StatutLivre statutLivre = statutLivreRepository.findById(2)
             .orElseThrow(() -> new IllegalArgumentException("Statut 'Emprunté' not found"));
         reservation.getLivre().setStatutLivre(statutLivre);
         livreRepository.save(reservation.getLivre());
 
-        // 6. Valider la réservation
         reservation.setEstValidee(true);
         reservationRepository.save(reservation);
     }
