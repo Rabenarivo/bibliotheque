@@ -78,6 +78,11 @@
             </div>
         </div>
 
+        <!-- Statistiques des retards -->
+        <div th:if="${empruntsEnRetard > 0}" class="alert alert-danger">
+            <strong>⚠️ Attention :</strong> <span th:text="${empruntsEnRetard}"></span> emprunt(s) en retard détecté(s) !
+        </div>
+
         <!-- Messages d'alerte -->
         <div th:if="${success}" class="alert alert-success" th:text="${success}"></div>
         <div th:if="${error}" class="alert alert-danger" th:text="${error}"></div>
@@ -99,6 +104,7 @@
                     <th>Date de retour prévue</th>
                     <th>Date de retour effective</th>
                     <th>Statut</th>
+                    <th>Jours de retard</th>
                     <th>Actions</th>
                 </tr>
             </thead>
@@ -118,16 +124,37 @@
                         </span>
                     </td>
                     <td>
+                        <span th:if="${emprunt.joursDeRetard > 0}" class="status-retard" 
+                              th:text="${'Retard de ' + emprunt.joursDeRetard + ' jour(s)'}">
+                        </span>
+                        <span th:if="${emprunt.joursDeRetard == 0}" th:text="'-'"></span>
+                    </td>
+                    <td>
                         <a th:href="@{/admin/emprunts/{id}(id=${emprunt.empruntId})}" class="btn btn-info">Détails</a>
                         <a th:href="@{/admin/emprunts/{id}/edit(id=${emprunt.empruntId})}" class="btn btn-warning">Modifier</a>
+                        
+                        <!-- Formulaire Retourner pour les emprunts en cours -->
                         <form th:if="${emprunt.statutEmprunt == 'en_cours'}" 
                               th:action="@{/admin/emprunts/{id}/return(id=${emprunt.empruntId})}" 
                               method="post" style="display: inline;">
+                            <input type="date" name="dateRetour" required style="width: 140px;">
                             <button type="submit" class="btn btn-success" 
-                                    onclick="return confirm('Confirmer le retour de ce livre ?')">
+                                    onclick="return confirm('Confirmer le retour de ce livre à la date sélectionnée ?')">
                                 Retourner
                             </button>
                         </form>
+                        
+                        <!-- Formulaire Retourner pour les emprunts en retard -->
+                        <form th:if="${emprunt.statutEmprunt == 'retard'}" 
+                              th:action="@{/admin/emprunts/{id}/return-retard(id=${emprunt.empruntId})}" 
+                              method="post" style="display: inline;">
+                            <input type="date" name="dateRetour" required style="width: 140px;">
+                            <button type="submit" class="btn btn-danger" 
+                                    onclick="return confirm('Confirmer le retour de ce livre en retard à la date sélectionnée ?')">
+                                Retourner (Retard)
+                            </button>
+                        </form>
+                        
                         <form th:action="@{/admin/emprunts/{id}/delete(id=${emprunt.empruntId})}" 
                               method="post" style="display: inline;">
                             <button type="submit" class="btn btn-danger" 

@@ -5,7 +5,6 @@ import org.springframework.stereotype.Service;
 import itu.biblio.repositories.AdherantRepository;
 
 import itu.biblio.entities.*;
-import itu.biblio.controllers.UtilisateurController;
 import itu.biblio.repositories.UtilisateurRepository;
 
 import java.util.List;

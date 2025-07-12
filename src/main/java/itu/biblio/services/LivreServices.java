@@ -1,19 +1,15 @@
 package itu.biblio.services;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import itu.biblio.repositories.AdherantRepository;
 import itu.biblio.repositories.HistoriqueLivreRepository;
 import itu.biblio.repositories.StatutLivreRepository;
 
 import itu.biblio.entities.*;
-import itu.biblio.controllers.UtilisateurController;
 import itu.biblio.projection.ListeLivreParAdherantProjection;
 import itu.biblio.projection.LivreDisponibiliteProjection;
-import itu.biblio.controllers.LivreController;
 import itu.biblio.repositories.LivreRepository;
-import itu.biblio.repositories.UtilisateurRepository;
+
 
 import java.time.LocalDate;
 import java.util.List;
@@ -34,7 +30,12 @@ public class LivreServices {
     }
 
     public List<ListeLivreParAdherantProjection> getAllLivres(Integer id) {
-        return livreRepository.findAvailableLivres(id);
+        try {
+            return livreRepository.findAvailableLivres(id);
+        } catch (Exception e) {
+            // Log l'erreur si besoin
+            return java.util.Collections.emptyList();
+        }
     }
 
     public List<Livre> getAllLivresForAdmin() {
@@ -56,16 +57,30 @@ public class LivreServices {
     public void updateLivreStatus(Integer livreId, String statutNom) {
         Livre livre = livreRepository.findById(livreId)
             .orElseThrow(() -> new RuntimeException("Livre non trouvé"));
-        
         StatutLivre statut = statutLivreRepository.findByNom(statutNom)
             .orElseThrow(() -> new RuntimeException("Statut non trouvé: " + statutNom));
-        
+        livre.setStatutLivre(statut);
+        livreRepository.save(livre);
         HistoriqueLivre historique = new HistoriqueLivre();
         historique.setLivre(livre);
         historique.setDateAction(LocalDate.now());
         historique.setTypeAction("CHANGEMENT_STATUT");
         historique.setDescription("Changement de statut vers: " + statutNom);
-        
+        historiqueLivreRepository.save(historique);
+    }
+
+    public void updateLivreStatusById(Integer livreId, Integer statutId) {
+        Livre livre = livreRepository.findById(livreId)
+            .orElseThrow(() -> new RuntimeException("Livre non trouvé"));
+        StatutLivre statut = statutLivreRepository.findById(statutId)
+            .orElseThrow(() -> new RuntimeException("Statut non trouvé: id=" + statutId));
+        livre.setStatutLivre(statut);
+        livreRepository.save(livre);
+        HistoriqueLivre historique = new HistoriqueLivre();
+        historique.setLivre(livre);
+        historique.setDateAction(LocalDate.now());
+        historique.setTypeAction("CHANGEMENT_STATUT");
+        historique.setDescription("Changement de statut vers id: " + statutId);
         historiqueLivreRepository.save(historique);
     }
 }
