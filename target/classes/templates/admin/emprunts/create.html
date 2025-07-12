@@ -100,22 +100,25 @@
             <strong>💡 Information :</strong> Sélectionnez d'abord un utilisateur pour voir les livres auxquels il a accès selon son type d'adhérent et vérifier son abonnement.
         </div>
         
-        <!-- Messages d'alerte -->
         <div th:if="${error}" class="alert alert-danger" th:text="${error}"></div>
         <div th:if="${success}" class="alert alert-success" th:text="${success}"></div>
+        <div th:if="${#lists.isEmpty(utilisateurs)}" class="alert alert-danger">Aucun utilisateur disponible. Veuillez en créer un avant d'ajouter un emprunt.</div>
+        <div th:if="${#lists.isEmpty(typeEmprunts)}" class="alert alert-danger">Aucun type d'emprunt disponible. Veuillez en créer un avant d'ajouter un emprunt.</div>
 
         <form th:action="@{/admin/emprunts/create}" method="post" id="empruntForm">
             <div class="form-group">
                 <label for="utilisateurId">Utilisateur *</label>
-                <select name="utilisateurId" id="utilisateurId" required onchange="loadUserBooks()">
+                <select name="utilisateurId" id="utilisateurId" required onchange="onUserChange()" th:disabled="${#lists.isEmpty(utilisateurs)}">
                     <option value="">Sélectionnez un utilisateur</option>
                     <option th:each="utilisateur : ${utilisateurs}" 
                             th:value="${utilisateur.id}" 
                             th:text="${utilisateur.prenom + ' ' + utilisateur.nom + ' (' + utilisateur.email + ')'}">
                     </option>
                 </select>
+                <div id="penaliteAlert" class="alert alert-danger" style="display:none;"></div>
                 <div id="subscriptionInfo" class="subscription-info" style="display: none;"></div>
                 <div id="empruntsInfo" class="subscription-info" style="display: none;"></div>
+                <div id="quotaInfo" class="subscription-info" style="display: none;"></div>
             </div>
 
             <div class="form-group">
@@ -129,7 +132,7 @@
 
             <div class="form-group">
                 <label for="typeEmpruntId">Type d'emprunt *</label>
-                <select name="typeEmpruntId" id="typeEmpruntId" required onchange="calculateReturnDate()">
+                <select name="typeEmpruntId" id="typeEmpruntId" required onchange="calculateReturnDate()" th:disabled="${#lists.isEmpty(typeEmprunts)}">
                     <option value="">Sélectionnez un type d'emprunt</option>
                     <option th:each="type : ${typeEmprunts}" 
                             th:value="${type.id}" 
@@ -140,7 +143,11 @@
             </div>
 
             <div class="form-group">
-                <label for="dateRetour">Date de retour *</label>
+                <label for="dateEmprunt">Date d'emprunt *</label>
+                <input type="date" name="dateEmprunt" id="dateEmprunt" required>
+            </div>
+            <div class="form-group">
+                <label for="dateRetour">Date de retour prévue</label>
                 <input type="date" name="dateRetour" id="dateRetour" required>
             </div>
 
@@ -154,6 +161,33 @@
     </div>
 
     <script>
+        const penalites = /*[[${penalites}]]*/ {};
+
+        function onUserChange() {
+            const userId = document.getElementById('utilisateurId').value;
+            const penaliteAlert = document.getElementById('penaliteAlert');
+            const submitBtn = document.getElementById('submitBtn');
+            if (userId && penalites[userId] && penalites[userId] > 0) {
+                penaliteAlert.style.display = 'block';
+                penaliteAlert.innerHTML = `Cet utilisateur est sous pénalité et ne peut pas emprunter de livre pendant encore <b>${penalites[userId]}</b> jour(s).`;
+                submitBtn.disabled = true;
+            } else {
+                penaliteAlert.style.display = 'none';
+                submitBtn.disabled = false;
+            }
+            loadUserBooks();
+        }
+
+        document.addEventListener('DOMContentLoaded', function() {
+            onUserChange();
+            const utilisateurs = /*[[${utilisateurs}]]*/ [];
+            const typeEmprunts = /*[[${typeEmprunts}]]*/ [];
+            const submitBtn = document.getElementById('submitBtn');
+            if (!utilisateurs.length || !typeEmprunts.length) {
+                submitBtn.disabled = true;
+            }
+        });
+
         function checkAvailability() {
             const livreId = document.getElementById('livreId').value;
             const availabilityInfo = document.getElementById('availabilityInfo');
@@ -202,11 +236,9 @@
                 return;
             }
 
-            // Vérifier l'abonnement de l'utilisateur
             checkUserSubscription(userId);
-            
-            // Vérifier les emprunts de l'utilisateur
             checkUserEmprunts(userId);
+            checkUserQuota(userId);
 
             fetch(`/admin/emprunts/user-books/${userId}`)
                 .then(response => response.json())
@@ -215,24 +247,23 @@
                     
                     if (data.length === 0) {
                         livreSelect.innerHTML = '<option value="" class="no-books">Aucun livre accessible pour cet utilisateur</option>';
-                        livreSelect.disabled = true;
-                        accessInfo.style.display = 'block';
-                        accessInfo.className = 'book-access-info access-denied';
-                        accessInfo.innerHTML = '❌ Cet utilisateur n\'a accès à aucun livre';
-                    } else {
-                        data.forEach(book => {
-                            const option = document.createElement('option');
-                            option.value = book.id;
-                            option.textContent = `${book.titre} par ${book.auteur}`;
-                            livreSelect.appendChild(option);
-                        });
-                        livreSelect.disabled = false;
-                        
-                        // Afficher le nombre de livres accessibles
-                        accessInfo.style.display = 'block';
-                        accessInfo.className = 'book-access-info access-granted';
-                        accessInfo.innerHTML = `✅ ${data.length} livre(s) accessible(s) pour cet utilisateur`;
-                    }
+                                            livreSelect.disabled = true;
+                    accessInfo.style.display = 'block';
+                    accessInfo.className = 'book-access-info access-denied';
+                    accessInfo.innerHTML = '❌ Cet utilisateur n\'a accès à aucun livre';
+                } else {
+                    data.forEach(book => {
+                        const option = document.createElement('option');
+                        option.value = book.id;
+                        option.textContent = `${book.titre} par ${book.auteur}`;
+                        livreSelect.appendChild(option);
+                    });
+                    livreSelect.disabled = false;
+                    
+                    accessInfo.style.display = 'block';
+                    accessInfo.className = 'book-access-info access-granted';
+                    accessInfo.innerHTML = `✅ ${data.length} livre(s) accessible(s) pour cet utilisateur`;
+                }
                     validateForm();
                 })
                 .catch(error => {
@@ -302,6 +333,35 @@
                     empruntsInfo.innerHTML = '❌ Erreur lors de la vérification des emprunts';
                 });
         }
+        
+        function checkUserQuota(userId) {
+            const quotaInfo = document.getElementById('quotaInfo');
+            
+            fetch(`/admin/emprunts/check-quota/${userId}`)
+                .then(response => response.json())
+                .then(data => {
+                    quotaInfo.style.display = 'block';
+                    
+                    if (data.canEmprunter) {
+                        if (data.message.includes('⚠️')) {
+                            quotaInfo.className = 'subscription-info subscription-warning';
+                        } else {
+                            quotaInfo.className = 'subscription-info subscription-valid';
+                        }
+                    } else {
+                        quotaInfo.className = 'subscription-info subscription-invalid';
+                    }
+                    
+                    quotaInfo.innerHTML = data.message;
+                    validateForm();
+                })
+                .catch(error => {
+                    console.error('Erreur lors de la vérification du quota:', error);
+                    quotaInfo.style.display = 'block';
+                    quotaInfo.className = 'subscription-info subscription-invalid';
+                    quotaInfo.innerHTML = '❌ Erreur lors de la vérification du quota';
+                });
+        }
 
         function checkUserAccess() {
             const userId = document.getElementById('utilisateurId').value;
@@ -312,9 +372,6 @@
                 accessInfo.style.display = 'none';
                 return;
             }
-
-            // L'accès est déjà vérifié lors du chargement des livres
-            // Cette fonction peut être utilisée pour des vérifications supplémentaires si nécessaire
         }
 
         function calculateReturnDate() {
@@ -333,19 +390,37 @@
             }
         }
 
+        const utilisateurIdEl = document.getElementById('utilisateurId');
+        const livreIdEl = document.getElementById('livreId');
+        const typeEmpruntIdEl = document.getElementById('typeEmpruntId');
+        const dateRetourEl = document.getElementById('dateRetour');
+
+        if (utilisateurIdEl) utilisateurIdEl.addEventListener('change', validateForm);
+        if (livreIdEl) livreIdEl.addEventListener('change', validateForm);
+        if (typeEmpruntIdEl) typeEmpruntIdEl.addEventListener('change', validateForm);
+        if (dateRetourEl) dateRetourEl.addEventListener('change', validateForm);
+
+        if (utilisateurIdEl && livreIdEl) {
+            utilisateurIdEl.addEventListener('change', function() {
+                livreIdEl.value = '';
+                const availabilityInfo = document.getElementById('availabilityInfo');
+                if (availabilityInfo) availabilityInfo.style.display = 'none';
+            });
+        }
+
         function validateForm() {
             const submitBtn = document.getElementById('submitBtn');
-            const userId = document.getElementById('utilisateurId').value;
-            const livreId = document.getElementById('livreId').value;
-            const typeId = document.getElementById('typeEmpruntId').value;
-            const dateRetour = document.getElementById('dateRetour').value;
+            const userId = utilisateurIdEl ? utilisateurIdEl.value : '';
+            const livreId = livreIdEl ? livreIdEl.value : '';
+            const typeId = typeEmpruntIdEl ? typeEmpruntIdEl.value : '';
+            const dateRetour = dateRetourEl ? dateRetourEl.value : '';
             
             const availabilityInfo = document.getElementById('availabilityInfo');
             const subscriptionInfo = document.getElementById('subscriptionInfo');
             const empruntsInfo = document.getElementById('empruntsInfo');
+            const quotaInfo = document.getElementById('quotaInfo');
             const livreSelect = document.getElementById('livreId');
             
-            // Vérifier si un livre est sélectionné et si le select n'est pas désactivé
             const livreSelected = livreId && !livreSelect.disabled;
             const isAvailable = availabilityInfo.style.display === 'none' || 
                                availabilityInfo.className.includes('available');
@@ -355,24 +430,14 @@
             const canEmprunterPlus = empruntsInfo.style.display === 'none' || 
                                    empruntsInfo.className.includes('subscription-valid') ||
                                    empruntsInfo.className.includes('subscription-warning');
+            const hasValidQuota = quotaInfo.style.display === 'none' || 
+                                 quotaInfo.className.includes('subscription-valid') ||
+                                 quotaInfo.className.includes('subscription-warning');
             
-            const canSubmit = userId && livreSelected && typeId && dateRetour && isAvailable && hasValidSubscription && canEmprunterPlus;
+            const canSubmit = userId && livreSelected && typeId && dateRetour && isAvailable && hasValidSubscription && canEmprunterPlus && hasValidQuota;
             
             submitBtn.disabled = !canSubmit;
         }
-
-        // Écouteurs d'événements pour la validation en temps réel
-        document.getElementById('utilisateurId').addEventListener('change', validateForm);
-        document.getElementById('livreId').addEventListener('change', validateForm);
-        document.getElementById('typeEmpruntId').addEventListener('change', validateForm);
-        document.getElementById('dateRetour').addEventListener('change', validateForm);
-        
-        // Réinitialiser les livres quand l'utilisateur change
-        document.getElementById('utilisateurId').addEventListener('change', function() {
-            // Réinitialiser la sélection de livre
-            document.getElementById('livreId').value = '';
-            document.getElementById('availabilityInfo').style.display = 'none';
-        });
     </script>
 </body>
 </html> 

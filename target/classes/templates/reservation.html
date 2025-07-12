@@ -43,11 +43,11 @@
                 
                 <div class="reservation-actions">
                     <a th:href="@{/reservation/valide/{id}(id=${reservation.reservationId})}" 
-                       class="button">
+                       class="button" id="validate-button-${reservation.reservationId}">
                         <i class="fas fa-check"></i> Valider
                     </a>
                     <a th:href="@{/reservation/delete/{id}(id=${reservation.reservationId})}" 
-                       class="button" style="background-color: #e74c3c;">
+                       class="button" style="background-color: #e74c3c;" id="delete-button-${reservation.reservationId}">
                         <i class="fas fa-trash"></i> Supprimer
                     </a>
                 </div>
@@ -57,9 +57,3 @@
         <!-- Bouton retour -->
         <div class="nav-buttons">
             <a th:href="@{/admin}" class="button">
-                <i class="fas fa-arrow-left"></i> Retour
-            </a>
-        </div>
-    </div>
-</body>
-</html>

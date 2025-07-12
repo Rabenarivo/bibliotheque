@@ -47,7 +47,7 @@ public class AbonnementService {
         Optional<Abonnement> abonnementActif = getAbonnementActifByUtilisateur(userId);
         return abonnementActif.isPresent();
     }
-
+    
     public boolean canEmprunter(Integer userId) {
         // Vérifier si l'utilisateur a un abonnement actif
         Optional<Abonnement> abonnementActif = getAbonnementActifByUtilisateur(userId);
@@ -82,86 +82,99 @@ public class AbonnementService {
         Optional<Abonnement> abonnementActif = getAbonnementActifByUtilisateur(userId);
         
         if (!abonnementActif.isPresent()) {
-            return "❌ Aucun abonnement actif trouvé";
+            return " Aucun abonnement actif trouvé";
         }
 
         Abonnement abonnement = abonnementActif.get();
         LocalDate aujourdhui = LocalDate.now();
         
         if (aujourdhui.isAfter(abonnement.getDateFin())) {
-            return "❌ Abonnement expiré le " + abonnement.getDateFin().format(java.time.format.DateTimeFormatter.ofPattern("dd/MM/yyyy"));
+            return " Abonnement expiré le " + abonnement.getDateFin().format(java.time.format.DateTimeFormatter.ofPattern("dd/MM/yyyy"));
         }
         
         long joursRestants = java.time.temporal.ChronoUnit.DAYS.between(aujourdhui, abonnement.getDateFin());
         
         if (joursRestants <= 7) {
-            return "⚠️ Abonnement expire dans " + joursRestants + " jour(s) - " + abonnement.getDateFin().format(java.time.format.DateTimeFormatter.ofPattern("dd/MM/yyyy"));
+            return " Abonnement expire dans " + joursRestants + " jour(s) - " + abonnement.getDateFin().format(java.time.format.DateTimeFormatter.ofPattern("dd/MM/yyyy"));
         } else {
-            return "✅ Abonnement valide jusqu'au " + abonnement.getDateFin().format(java.time.format.DateTimeFormatter.ofPattern("dd/MM/yyyy")) + " (" + joursRestants + " jours restants)";
+            return " Abonnement valide jusqu'au " + abonnement.getDateFin().format(java.time.format.DateTimeFormatter.ofPattern("dd/MM/yyyy")) + " (" + joursRestants + " jours restants)";
         }
     }
     
-    /**
-     * Vérifie si l'utilisateur peut emprunter un livre de plus
-     * en tenant compte de sa limite d'emprunts
-     */
     public boolean canEmprunterPlus(Integer userId) {
         try {
-            // Récupérer l'utilisateur et son adhérent
             Utilisateur utilisateur = utilisateurServices.getUtilisateurById(userId).orElse(null);
-            if (utilisateur == null || utilisateur.getIdAdherant() == null) {
+            if (utilisateur == null) {
                 return false;
             }
             
-            // Récupérer la limite d'emprunts de l'adhérent
-            Integer limiteEmprunts = utilisateur.getIdAdherant().getNbrLivrePret();
-            if (limiteEmprunts == null) {
-                return false;
-            }
-            
-            // Compter les emprunts en cours de l'utilisateur
-            long empruntsEnCours = countEmpruntsEnCours(userId);
-            
-            return empruntsEnCours < limiteEmprunts;
+            return utilisateur.peutEmprunter();
         } catch (Exception e) {
             return false;
         }
     }
     
-    /**
-     * Compte le nombre d'emprunts en cours pour un utilisateur
-     */
-    public long countEmpruntsEnCours(Integer userId) {
-        return abonnementRepository.countEmpruntsEnCoursByUtilisateur(userId);
+    public void diminuerQuota(Integer userId) {
+        try {
+            Utilisateur utilisateur = utilisateurServices.getUtilisateurById(userId).orElse(null);
+            if (utilisateur != null) {
+                utilisateur.diminuerQuota();
+                utilisateurServices.saveUtilisateur(utilisateur);
+            }
+        } catch (Exception e) {
+        }
     }
     
-    /**
-     * Retourne le message d'information sur les emprunts
-     */
+    public void augmenterQuota(Integer userId) {
+        try {
+            Utilisateur utilisateur = utilisateurServices.getUtilisateurById(userId).orElse(null);
+            if (utilisateur != null) {
+                utilisateur.augmenterQuota();
+                utilisateurServices.saveUtilisateur(utilisateur);
+            }
+        } catch (Exception e) {
+        }
+    }
+    
+    public void initialiserQuota(Integer userId) {
+        try {
+            Utilisateur utilisateur = utilisateurServices.getUtilisateurById(userId).orElse(null);
+            if (utilisateur != null) {
+                utilisateur.initialiserQuota();
+                utilisateurServices.saveUtilisateur(utilisateur);
+            }
+        } catch (Exception e) {
+        }
+    }
+
     public String getMessageEmprunts(Integer userId) {
         try {
             Utilisateur utilisateur = utilisateurServices.getUtilisateurById(userId).orElse(null);
             if (utilisateur == null || utilisateur.getIdAdherant() == null) {
-                return "❌ Utilisateur ou adhérent non trouvé";
+                return " Utilisateur ou adhérent non trouvé";
             }
             
             Integer limiteEmprunts = utilisateur.getIdAdherant().getNbrLivrePret();
+            Integer quotaActuel = utilisateur.getQuotaActuel();
+            
             if (limiteEmprunts == null) {
-                return "❌ Limite d'emprunts non définie";
+                return " Limite d'emprunts non définie";
             }
             
-            long empruntsEnCours = countEmpruntsEnCours(userId);
-            long empruntsRestants = limiteEmprunts - empruntsEnCours;
+            if (quotaActuel == null) {
+                initialiserQuota(userId);
+                quotaActuel = utilisateur.getQuotaActuel();
+            }
             
-            if (empruntsEnCours >= limiteEmprunts) {
-                return "❌ Limite d'emprunts atteinte (" + empruntsEnCours + "/" + limiteEmprunts + ")";
-            } else if (empruntsRestants <= 2) {
-                return "⚠️ Plus que " + empruntsRestants + " emprunt(s) possible(s) (" + empruntsEnCours + "/" + limiteEmprunts + ")";
+            if (quotaActuel <= 0) {
+                return " Quota d'emprunts épuisé (0/" + limiteEmprunts + ")";
+            } else if (quotaActuel <= 2) {
+                return " Plus que " + quotaActuel + " emprunt(s) possible(s) (" + quotaActuel + "/" + limiteEmprunts + ")";
             } else {
-                return "✅ " + empruntsRestants + " emprunt(s) possible(s) (" + empruntsEnCours + "/" + limiteEmprunts + ")";
+                return " " + quotaActuel + " emprunt(s) possible(s) (" + quotaActuel + "/" + limiteEmprunts + ")";
             }
         } catch (Exception e) {
-            return "❌ Erreur lors de la vérification des emprunts";
+            return " Erreur lors de la vérification des emprunts";
         }
     }
 } 

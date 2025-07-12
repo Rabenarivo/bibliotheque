@@ -6,5 +6,5 @@ public interface ListeLivreParAdherantProjection {
     String getAuteur();
     Integer getAge();
     String getImage();
-    Integer getExemplairesDisponibles();  // Add this field
+    Integer getExemplairesDisponibles();
 }

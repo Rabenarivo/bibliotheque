@@ -38,8 +38,37 @@ public class Utilisateur {
     @JoinColumn(name = "id_adherant")
     private Adherant idAdherant;
 
+    @Column(name = "quota_actuel")
+    private Integer quotaActuel;
+
     public boolean isAdmin() {
         return Boolean.TRUE.equals(estAdmin);
     }
+    
+    public void initialiserQuota() {
+        if (this.idAdherant != null && this.idAdherant.getNbrLivrePret() != null) {
+            this.quotaActuel = this.idAdherant.getNbrLivrePret();
+        }
     }
+    
+    public void diminuerQuota() {
+        if (this.quotaActuel != null && this.quotaActuel > 0) {
+            this.quotaActuel--;
+        }
+    }
+    
+    public void augmenterQuota() {
+        if (this.idAdherant != null && this.idAdherant.getNbrLivrePret() != null) {
+            if (this.quotaActuel == null) {
+                this.quotaActuel = this.idAdherant.getNbrLivrePret();
+            } else if (this.quotaActuel < this.idAdherant.getNbrLivrePret()) {
+                this.quotaActuel++;
+            }
+        }
+    }
+    
+    public boolean peutEmprunter() {
+        return this.quotaActuel != null && this.quotaActuel > 0;
+    }
+}
 
