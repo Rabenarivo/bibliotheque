@@ -37,6 +37,7 @@
             <p><strong>ID:</strong> <span th:text="${userId}"></span></p>
             <p><strong>Nom:</strong> <span th:text="${utilisateur.prenom + ' ' + utilisateur.nom}"></span></p>
             <p><strong>Email:</strong> <span th:text="${utilisateur.email}"></span></p>
+            <p><strong>Quota actuel:</strong> <span th:text="${utilisateur.quotaActuel}"></span></p>
         </div>
         
         <div class="test-section">
@@ -82,6 +83,11 @@
             </div>
             <div th:unless="${peutProlonger}" class="test-result error">
                 ❌ L'utilisateur ne peut pas prolonger (quota insuffisant)
+            </div>
+            
+            <div class="test-result info">
+                <strong>Message de vérification:</strong><br>
+                <span th:text="${messageVerification}"></span>
             </div>
         </div>
         
