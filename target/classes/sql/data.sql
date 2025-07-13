@@ -16,7 +16,7 @@ INSERT INTO type_emprunt(id, nom) VALUES
 
 -- Table: adherant
 INSERT INTO adherant(type, nbr_reservation, nbr_livre_pret, nbr_jrs_pret) VALUES 
-('Etudiant', 2, 3, 15), 
+('Etudiant', 3, 3, 15), 
 ('Prof', 5, 5, 30);
 
 -- Table: livre

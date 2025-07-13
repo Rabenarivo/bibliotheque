@@ -9,6 +9,8 @@
 </head>
 <body>
     <div class="profile-container">
+
+        
         <div class="profile-header" th:if="${utilisateur}">
             <div class="profile-avatar">
                 <i class="fas fa-user"></i>
@@ -39,6 +41,11 @@
             <a href="/livres" class="profile-btn profile-btn-primary">
                 <i class="fas fa-book"></i> Voir les Livres
             </a>
+            
+            <a href="/prolongements" class="profile-btn profile-btn-info">
+                <i class="fas fa-clock"></i> Prolongements
+            </a>
+
             <a href="/logout" class="profile-btn profile-btn-secondary">
                 <i class="fas fa-sign-out-alt"></i> Déconnexion
             </a>

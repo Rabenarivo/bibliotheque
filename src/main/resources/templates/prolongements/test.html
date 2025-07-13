@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Test Prolongement</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+    <style>
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        .test-section {
+            background: #f8f9fa;
+            border: 1px solid #dee2e6;
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+        .test-result {
+            padding: 10px;
+            border-radius: 4px;
+            margin: 10px 0;
+        }
+        .success { background: #d4edda; color: #155724; }
+        .error { background: #f8d7da; color: #721c24; }
+        .info { background: #d1ecf1; color: #0c5460; }
+        .warning { background: #fff3cd; color: #856404; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🔍 Test des Conditions de Prolongement</h1>
+        
+        <div class="test-section">
+            <h3>Informations Utilisateur</h3>
+            <p><strong>ID:</strong> <span th:text="${userId}"></span></p>
+            <p><strong>Nom:</strong> <span th:text="${utilisateur.prenom + ' ' + utilisateur.nom}"></span></p>
+            <p><strong>Email:</strong> <span th:text="${utilisateur.email}"></span></p>
+        </div>
+        
+        <div class="test-section">
+            <h3>Test de l'Emprunt</h3>
+            <p><strong>ID Emprunt:</strong> <span th:text="${empruntId}"></span></p>
+            <div th:if="${emprunt}" class="test-result info">
+                <strong>✅ Emprunt trouvé</strong><br>
+                Statut: <span th:text="${emprunt.statutEmprunt}"></span><br>
+                Date d'emprunt: <span th:text="${#temporals.format(emprunt.dateEmprunt, 'dd/MM/yyyy')}"></span><br>
+                Date de retour: <span th:text="${#temporals.format(emprunt.dateRetour, 'dd/MM/yyyy')}"></span><br>
+                Utilisateur: <span th:text="${emprunt.utilisateur.prenom + ' ' + emprunt.utilisateur.nom}"></span>
+            </div>
+            <div th:unless="${emprunt}" class="test-result error">
+                <strong>❌ Emprunt non trouvé</strong>
+            </div>
+        </div>
+        
+        <div class="test-section">
+            <h3>Vérifications</h3>
+            <div th:if="${emprunt != null and emprunt.utilisateur != null and emprunt.utilisateur.id == userId}" class="test-result success">
+                ✅ L'emprunt appartient à l'utilisateur
+            </div>
+            <div th:unless="${emprunt != null and emprunt.utilisateur != null and emprunt.utilisateur.id == userId}" class="test-result error">
+                ❌ L'emprunt n'appartient pas à l'utilisateur
+            </div>
+            
+            <div th:if="${emprunt != null and (emprunt.statutEmprunt == 'en_cours' or emprunt.statutEmprunt == 'En cours')}" class="test-result success">
+                ✅ L'emprunt est en cours
+            </div>
+            <div th:unless="${emprunt != null and (emprunt.statutEmprunt == 'en_cours' or emprunt.statutEmprunt == 'En cours')}" class="test-result error">
+                ❌ L'emprunt n'est pas en cours (statut: <span th:text="${emprunt != null ? emprunt.statutEmprunt : 'N/A'}"></span>)
+            </div>
+            
+            <div th:if="${demandesEnAttente < 3}" class="test-result success">
+                ✅ Nombre de demandes en attente OK (<span th:text="${demandesEnAttente}"></span>/3)
+            </div>
+            <div th:unless="${demandesEnAttente < 3}" class="test-result error">
+                ❌ Trop de demandes en attente (<span th:text="${demandesEnAttente}"></span>/3)
+            </div>
+            
+            <div th:if="${peutProlonger}" class="test-result success">
+                ✅ L'utilisateur peut prolonger (quota OK)
+            </div>
+            <div th:unless="${peutProlonger}" class="test-result error">
+                ❌ L'utilisateur ne peut pas prolonger (quota insuffisant)
+            </div>
+        </div>
+        
+        <div class="test-section">
+            <h3>Demandes Existantes</h3>
+            <div th:if="${demandes.empty}" class="test-result info">
+                Aucune demande de prolongement existante
+            </div>
+            <div th:unless="${demandes.empty}">
+                <div th:each="demande : ${demandes}" class="test-result info">
+                    <strong>Demande #<span th:text="${demande.id}"></span></strong><br>
+                    Statut: <span th:text="${demande.statut}"></span><br>
+                    Date de demande: <span th:text="${#temporals.format(demande.dateDemande, 'dd/MM/yyyy')}"></span><br>
+                    Motif: <span th:text="${demande.motif}"></span>
+                </div>
+            </div>
+        </div>
+        
+        <div class="test-section" th:if="${peutProlongerEmprunt}">
+            <h3>Actions</h3>
+            <a th:href="@{/prolongements/demander/{id}(id=${empruntId})}" class="btn btn-primary" 
+               th:if="${peutProlongerEmprunt}">
+                📝 Continuer vers le formulaire de demande
+            </a>
+            <div th:unless="${peutProlongerEmprunt}" class="test-result error">
+                ❌ Impossible de demander une prolongement
+            </div>
+            
+            <a th:href="@{/profile}" class="btn btn-secondary">
+                🔙 Retour au profil
+            </a>
+        </div>
+        
+        <div class="test-section" th:unless="${peutProlongerEmprunt}">
+            <h3>Actions</h3>
+            <div class="test-result error">
+                ❌ Impossible de demander une prolongement
+            </div>
+            
+            <a th:href="@{/profile}" class="btn btn-secondary">
+                🔙 Retour au profil
+            </a>
+        </div>
+    </div>
+</body>
+</html> 

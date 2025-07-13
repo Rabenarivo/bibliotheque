@@ -1,0 +1,408 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Admin - Gestion des Prolongements</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        .admin-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        .stats-section {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+        .stat-card {
+            background: white;
+            border: 1px solid #e9ecef;
+            border-radius: 12px;
+            padding: 20px;
+            text-align: center;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+        .stat-number {
+            font-size: 2.5em;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+        .stat-en-attente { color: #ffc107; }
+        .stat-total { color: #007bff; }
+        .stat-label {
+            color: #6c757d;
+            font-size: 0.9em;
+        }
+        .demandes-section {
+            background: white;
+            border: 1px solid #e9ecef;
+            border-radius: 12px;
+            padding: 30px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+        .demande-item {
+            border: 1px solid #e9ecef;
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 20px;
+            transition: box-shadow 0.3s ease;
+        }
+        .demande-item:hover {
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+        .demande-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid #e9ecef;
+        }
+        .demande-id {
+            font-size: 1.2em;
+            font-weight: bold;
+            color: #2c3e50;
+        }
+        .demande-statut {
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 0.9em;
+            font-weight: 600;
+        }
+        .statut-en-attente {
+            background: #fff3cd;
+            color: #856404;
+        }
+        .statut-acceptee {
+            background: #d4edda;
+            color: #155724;
+        }
+        .statut-refusee {
+            background: #f8d7da;
+            color: #721c24;
+        }
+        .demande-details {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-bottom: 15px;
+        }
+        .detail-item {
+            display: flex;
+            flex-direction: column;
+        }
+        .detail-label {
+            font-weight: 600;
+            color: #6c757d;
+            font-size: 0.9em;
+            margin-bottom: 5px;
+        }
+        .detail-value {
+            color: #2c3e50;
+        }
+        .demande-motif {
+            background: #f8f9fa;
+            border: 1px solid #e9ecef;
+            border-radius: 6px;
+            padding: 15px;
+            margin-top: 15px;
+        }
+        .motif-label {
+            font-weight: 600;
+            color: #495057;
+            margin-bottom: 8px;
+        }
+        .motif-text {
+            color: #6c757d;
+            line-height: 1.5;
+        }
+        .demande-actions {
+            margin-top: 15px;
+            padding-top: 15px;
+            border-top: 1px solid #e9ecef;
+        }
+        .btn {
+            padding: 8px 16px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            text-decoration: none;
+            display: inline-block;
+            margin: 5px;
+            font-size: 14px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+        .btn-success {
+            background: linear-gradient(135deg, #28a745, #20c997);
+            color: white;
+        }
+        .btn-success:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(40, 167, 69, 0.3);
+        }
+        .btn-danger {
+            background: linear-gradient(135deg, #dc3545, #c82333);
+            color: white;
+        }
+        .btn-danger:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(220, 53, 69, 0.3);
+        }
+        .btn-info {
+            background: linear-gradient(135deg, #17a2b8, #138496);
+            color: white;
+        }
+        .btn-info:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(23, 162, 184, 0.3);
+        }
+        .btn-secondary {
+            background: #6c757d;
+            color: white;
+        }
+        .btn-secondary:hover {
+            background: #5a6268;
+        }
+        .alert {
+            padding: 15px;
+            margin-bottom: 20px;
+            border: 1px solid transparent;
+            border-radius: 8px;
+        }
+        .alert-success {
+            color: #155724;
+            background-color: #d4edda;
+            border-color: #c3e6cb;
+        }
+        .alert-danger {
+            color: #721c24;
+            background-color: #f8d7da;
+            border-color: #f5c6cb;
+        }
+        .empty-state {
+            text-align: center;
+            padding: 60px 20px;
+            color: #6c757d;
+        }
+        .empty-state i {
+            font-size: 4em;
+            margin-bottom: 20px;
+            color: #dee2e6;
+        }
+        .filter-section {
+            background: #f8f9fa;
+            border: 1px solid #e9ecef;
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+        .filter-section h3 {
+            margin-bottom: 15px;
+            color: #2c3e50;
+        }
+        .filter-buttons {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+        .filter-btn {
+            padding: 8px 16px;
+            border: 1px solid #dee2e6;
+            background: white;
+            color: #495057;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        .filter-btn.active {
+            background: #007bff;
+            color: white;
+            border-color: #007bff;
+        }
+        .filter-btn:hover {
+            background: #007bff;
+            color: white;
+            border-color: #007bff;
+        }
+    </style>
+</head>
+<body>
+    <div class="admin-container">
+        <h1>⚙️ Gestion des Prolongements</h1>
+        
+        <!-- Messages d'alerte -->
+        <div th:if="${success}" class="alert alert-success" th:text="${success}"></div>
+        <div th:if="${error}" class="alert alert-danger" th:text="${error}"></div>
+        
+        <div class="stats-section">
+            <div class="stat-card">
+                <div class="stat-number stat-en-attente" th:text="${demandesEnAttente.size()}">0</div>
+                <div class="stat-label">En attente</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number stat-total" th:text="${demandes.size()}">0</div>
+                <div class="stat-label">Total des demandes</div>
+            </div>
+        </div>
+
+        <div class="filter-section">
+            <h3>🔍 Filtres</h3>
+            <div class="filter-buttons">
+                <button class="filter-btn active" onclick="filterDemandes('all')">Toutes</button>
+                <button class="filter-btn" onclick="filterDemandes('en_attente')">En attente</button>
+                <button class="filter-btn" onclick="filterDemandes('acceptee')">Acceptées</button>
+                <button class="filter-btn" onclick="filterDemandes('refusee')">Refusées</button>
+            </div>
+        </div>
+
+        <div class="demandes-section">
+            <h2>📋 Liste des demandes</h2>
+            
+            <div th:if="${demandes.empty}" class="empty-state">
+                <i class="fas fa-inbox"></i>
+                <h3>Aucune demande trouvée</h3>
+                <p>Aucune demande de prolongement n'a été soumise pour le moment.</p>
+            </div>
+            
+            <div th:unless="${demandes.empty}">
+                <div th:each="demande : ${demandes}" class="demande-item" th:data-statut="${demande.statut}">
+                    <div class="demande-header">
+                        <div class="demande-id">
+                            Demande #<span th:text="${demande.id}"></span>
+                        </div>
+                        <div th:class="${'demande-statut statut-' + demande.statut}" th:text="${demande.statut}">
+                            Statut
+                        </div>
+                    </div>
+                    
+                    <div class="demande-details">
+                        <div class="detail-item">
+                            <div class="detail-label">Utilisateur</div>
+                            <div class="detail-value" th:text="${demande.utilisateur.prenom + ' ' + demande.utilisateur.nom}"></div>
+                        </div>
+                        <div class="detail-item">
+                            <div class="detail-label">Email</div>
+                            <div class="detail-value" th:text="${demande.utilisateur.email}"></div>
+                        </div>
+                        <div class="detail-item">
+                            <div class="detail-label">Emprunt ID</div>
+                            <div class="detail-value" th:text="${demande.emprunt.id}"></div>
+                        </div>
+                        <div class="detail-item">
+                            <div class="detail-label">Date de demande</div>
+                            <div class="detail-value" th:text="${#temporals.format(demande.dateDemande, 'dd/MM/yyyy')}"></div>
+                        </div>
+                        <div class="detail-item">
+                            <div class="detail-label">Nouvelle date souhaitée</div>
+                            <div class="detail-value" th:text="${#temporals.format(demande.dateProlongementDemandee, 'dd/MM/yyyy')}"></div>
+                        </div>
+                        <div class="detail-item" th:if="${demande.dateValidation != null}">
+                            <div class="detail-label">Date de validation</div>
+                            <div class="detail-value" th:text="${#temporals.format(demande.dateValidation, 'dd/MM/yyyy')}"></div>
+                        </div>
+                        <div class="detail-item" th:if="${demande.adminValidateur != null}">
+                            <div class="detail-label">Validé par</div>
+                            <div class="detail-value" th:text="${demande.adminValidateur.prenom + ' ' + demande.adminValidateur.nom}"></div>
+                        </div>
+                    </div>
+                    
+                    <div class="demande-motif">
+                        <div class="motif-label">Motif de la demande :</div>
+                        <div class="motif-text" th:text="${demande.motif}"></div>
+                    </div>
+                    
+                    <div class="demande-actions" th:if="${demande.statut == 'en_attente'}">
+                        <form th:action="@{/admin/prolongements/{id}/approuver(id=${demande.id})}" method="post" style="display: inline;">
+                            <button type="submit" class="btn btn-success" onclick="return confirm('Êtes-vous sûr de vouloir approuver cette demande ?')">
+                                <i class="fas fa-check"></i> Approuver
+                            </button>
+                        </form>
+                        
+                        <button class="btn btn-danger" onclick="showRefusForm(this, [[${demande.id}]])">
+                            <i class="fas fa-times"></i> Refuser
+                        </button>
+                        
+                        <a th:href="@{/admin/prolongements/{id}/details(id=${demande.id})}" class="btn btn-info">
+                            <i class="fas fa-eye"></i> Détails
+                        </a>
+                    </div>
+                    
+                    <div class="demande-actions" th:unless="${demande.statut == 'en_attente'}">
+                        <span class="detail-label">Cette demande a été traitée</span>
+                        <a th:href="@{/admin/prolongements/{id}/details(id=${demande.id})}" class="btn btn-info">
+                            <i class="fas fa-eye"></i> Voir détails
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div style="text-align: center; margin-top: 30px;">
+            <a th:href="@{/admin/dashboard}" class="btn btn-secondary">
+                <i class="fas fa-arrow-left"></i> Retour au dashboard
+            </a>
+        </div>
+    </div>
+
+    <!-- Modal pour le refus -->
+    <div id="refusModal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 1000;">
+        <div style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); background: white; padding: 30px; border-radius: 12px; min-width: 400px;">
+            <h3>❌ Refuser la demande</h3>
+            <form id="refusForm" method="post">
+                <div style="margin-bottom: 20px;">
+                    <label for="motifRefus" style="display: block; margin-bottom: 8px; font-weight: 600;">Motif du refus :</label>
+                    <textarea id="motifRefus" name="motifRefus" required style="width: 100%; height: 100px; padding: 10px; border: 1px solid #ddd; border-radius: 6px; resize: vertical;"></textarea>
+                </div>
+                <div style="text-align: right;">
+                    <button type="button" onclick="hideRefusForm()" class="btn btn-secondary">Annuler</button>
+                    <button type="submit" class="btn btn-danger">Confirmer le refus</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        function filterDemandes(statut) {
+            const demandes = document.querySelectorAll('.demande-item');
+            const filterBtns = document.querySelectorAll('.filter-btn');
+            
+            // Mettre à jour les boutons actifs
+            filterBtns.forEach(btn => btn.classList.remove('active'));
+            event.target.classList.add('active');
+            
+            // Filtrer les demandes
+            demandes.forEach(demande => {
+                if (statut === 'all' || demande.dataset.statut === statut) {
+                    demande.style.display = 'block';
+                } else {
+                    demande.style.display = 'none';
+                }
+            });
+        }
+        
+        function showRefusForm(button, demandeId) {
+            const modal = document.getElementById('refusModal');
+            const form = document.getElementById('refusForm');
+            form.action = `/admin/prolongements/${demandeId}/refuser`;
+            modal.style.display = 'block';
+        }
+        
+        function hideRefusForm() {
+            const modal = document.getElementById('refusModal');
+            modal.style.display = 'none';
+            document.getElementById('motifRefus').value = '';
+        }
+        
+        // Fermer le modal en cliquant à l'extérieur
+        document.getElementById('refusModal').addEventListener('click', function(e) {
+            if (e.target === this) {
+                hideRefusForm();
+            }
+        });
+    </script>
+</body>
+</html> 

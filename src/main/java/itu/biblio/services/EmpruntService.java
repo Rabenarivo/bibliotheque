@@ -36,7 +36,26 @@ public class EmpruntService {
     }
 
     public EmpruntProjection getEmpruntByIdWithDetails(Integer id) {
-        return empruntRepository.findEmpruntByIdWithDetails(id).orElse(null);
+        System.out.println("EmpruntService: Recherche de l'emprunt avec l'ID: " + id);
+        
+        // D'abord, vérifions si l'emprunt existe
+        Optional<Emprunt> empruntOpt = empruntRepository.findById(id);
+        if (!empruntOpt.isPresent()) {
+            System.out.println("EmpruntService: Aucun emprunt trouvé avec l'ID: " + id);
+            return null;
+        }
+        
+        System.out.println("EmpruntService: Emprunt trouvé, recherche des détails...");
+        
+        // Ensuite, essayons de récupérer les détails
+        Optional<EmpruntProjection> projectionOpt = empruntRepository.findEmpruntByIdWithDetails(id);
+        if (projectionOpt.isPresent()) {
+            System.out.println("EmpruntService: Détails trouvés");
+            return projectionOpt.get();
+        } else {
+            System.out.println("EmpruntService: Aucun détail trouvé pour l'emprunt ID: " + id);
+            return null;
+        }
     }
 
     public long countEmpruntsByStatut(String statut) {

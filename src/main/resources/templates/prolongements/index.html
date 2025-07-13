@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Gestion des Prolongements</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        .prolongement-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        .prolongement-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            margin-top: 30px;
+        }
+        .prolongement-card {
+            background: white;
+            border: 1px solid #e9ecef;
+            border-radius: 12px;
+            padding: 25px;
+            text-align: center;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        .prolongement-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 15px rgba(0, 0, 0, 0.2);
+        }
+        .prolongement-icon {
+            font-size: 3em;
+            margin-bottom: 15px;
+            color: #007bff;
+        }
+        .prolongement-title {
+            font-size: 1.5em;
+            font-weight: bold;
+            color: #2c3e50;
+            margin-bottom: 10px;
+        }
+        .prolongement-description {
+            color: #6c757d;
+            margin-bottom: 20px;
+            line-height: 1.6;
+        }
+        .prolongement-btn {
+            display: inline-block;
+            padding: 12px 24px;
+            background: linear-gradient(135deg, #007bff, #0056b3);
+            color: white;
+            text-decoration: none;
+            border-radius: 8px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            border: none;
+            cursor: pointer;
+        }
+        .prolongement-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0, 123, 255, 0.3);
+            color: white;
+            text-decoration: none;
+        }
+        .prolongement-btn.admin {
+            background: linear-gradient(135deg, #28a745, #1e7e34);
+        }
+        .prolongement-btn.admin:hover {
+            box-shadow: 0 4px 8px rgba(40, 167, 69, 0.3);
+        }
+        .prolongement-btn.user {
+            background: linear-gradient(135deg, #ffc107, #e0a800);
+            color: #212529;
+        }
+        .prolongement-btn.user:hover {
+            box-shadow: 0 4px 8px rgba(255, 193, 7, 0.3);
+            color: #212529;
+        }
+        .info-section {
+            background: #f8f9fa;
+            border: 1px solid #dee2e6;
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 30px;
+        }
+        .info-section h3 {
+            color: #2c3e50;
+            margin-bottom: 15px;
+            border-bottom: 2px solid #007bff;
+            padding-bottom: 10px;
+        }
+        .info-section ul {
+            list-style: none;
+            padding: 0;
+        }
+        .info-section li {
+            padding: 8px 0;
+            border-bottom: 1px solid #e9ecef;
+            color: #495057;
+        }
+        .info-section li:before {
+            content: "✓";
+            color: #28a745;
+            font-weight: bold;
+            margin-right: 10px;
+        }
+        .contact-form {
+            display: none;
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: white;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
+            z-index: 1000;
+            max-width: 500px;
+            width: 90%;
+        }
+        .contact-form h3 {
+            margin-bottom: 20px;
+            color: #2c3e50;
+        }
+        .contact-form input,
+        .contact-form textarea {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 15px;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            font-size: 14px;
+        }
+        .contact-form textarea {
+            height: 100px;
+            resize: vertical;
+        }
+        .contact-form .btn {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            margin-right: 10px;
+        }
+        .btn-primary { background-color: #007bff; color: white; }
+        .btn-secondary { background-color: #6c757d; color: white; }
+        .overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 999;
+        }
+    </style>
+</head>
+<body>
+    <div class="prolongement-container">
+        <h1>⏰ Gestion des Prolongements</h1>
+        
+        <div class="info-section">
+            <h3>📋 Comment fonctionne le système de prolongement ?</h3>
+            <ul>
+                <li>Vous pouvez demander une prolongation pour un emprunt en cours</li>
+                <li>Maximum 3 demandes en attente simultanément</li>
+                <li>Chaque prolongation approuvée compte comme 1 quota supplémentaire</li>
+                <li>Les demandes sont examinées par un administrateur</li>
+                <li>Vous recevrez une notification de la décision</li>
+            </ul>
+        </div>
+
+        <div class="prolongement-grid">
+            <div class="prolongement-card">
+                <div class="prolongement-icon">📝</div>
+                <div class="prolongement-title">Mes Demandes</div>
+                <div class="prolongement-description">
+                    Consultez l'état de vos demandes de prolongement en cours, acceptées ou refusées.
+                </div>
+                <a th:href="@{/prolongements/mes-demandes}" class="prolongement-btn user">
+                    Voir mes demandes
+                </a>
+            </div>
+
+            <div class="prolongement-card" th:if="${utilisateur.estAdmin}">
+                <div class="prolongement-icon">⚙️</div>
+                <div class="prolongement-title">Gestion Admin</div>
+                <div class="prolongement-description">
+                    Gérez toutes les demandes de prolongement : approuvez, refusez et suivez les statistiques.
+                </div>
+                <a th:href="@{/admin/prolongements}" class="prolongement-btn admin">
+                    Gérer les prolongements
+                </a>
+            </div>
+
+            <div class="prolongement-card">
+                <div class="prolongement-icon">📚</div>
+                <div class="prolongement-title">Mes Emprunts</div>
+                <div class="prolongement-description">
+                    Consultez vos emprunts en cours et demandez des prolongations si nécessaire.
+                </div>
+                <a th:href="@{/admin/emprunts}" class="prolongement-btn">
+                    Voir mes emprunts
+                </a>
+            </div>
+
+            <div class="prolongement-card">
+                <div class="prolongement-icon">📞</div>
+                <div class="prolongement-title">Contact Support</div>
+                <div class="prolongement-description">
+                    Besoin d'aide ? Contactez notre équipe de support pour toute question sur les prolongements.
+                </div>
+                <button onclick="showContactForm()" class="prolongement-btn" style="border: none; cursor: pointer;">
+                    Contacter le support
+                </button>
+            </div>
+        </div>
+
+        <div style="text-align: center; margin-top: 30px;">
+            <a th:href="@{/profile}" class="prolongement-btn" style="background: #6c757d;">
+                <i class="fas fa-arrow-left"></i> Retour au profil
+            </a>
+        </div>
+    </div>
+
+    <!-- Formulaire de contact -->
+    <div class="overlay" id="overlay"></div>
+    <div class="contact-form" id="contactForm">
+        <h3>📞 Contact Support</h3>
+        <form>
+            <input type="text" placeholder="Votre nom" required>
+            <input type="email" placeholder="Votre email" required>
+            <input type="text" placeholder="Sujet" required>
+            <textarea placeholder="Votre message..." required></textarea>
+            <button type="submit" class="btn btn-primary">Envoyer</button>
+            <button type="button" class="btn btn-secondary" onclick="hideContactForm()">Annuler</button>
+        </form>
+    </div>
+
+    <script>
+        function showContactForm() {
+            document.getElementById('overlay').style.display = 'block';
+            document.getElementById('contactForm').style.display = 'block';
+        }
+
+        function hideContactForm() {
+            document.getElementById('overlay').style.display = 'none';
+            document.getElementById('contactForm').style.display = 'none';
+        }
+
+        // Fermer le formulaire en cliquant sur l'overlay
+        document.getElementById('overlay').addEventListener('click', hideContactForm);
+    </script>
+</body>
+</html> 

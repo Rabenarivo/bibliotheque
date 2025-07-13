@@ -39,6 +39,17 @@ public interface EmpruntRepository extends JpaRepository<Emprunt, Integer> {
            "WHERE e.id = :id")
     Optional<EmpruntProjection> findEmpruntByIdWithDetails(@Param("id") Integer id);
 
+    // Méthode alternative plus simple pour trouver un emprunt par ID
+    @Query("SELECT e.id AS empruntId, u.nom AS utilisateurNom, u.prenom AS utilisateurPrenom, " +
+           "u.email AS utilisateurEmail, " +
+           "e.dateEmprunt AS dateEmprunt, e.dateRetour AS dateRetour, e.statutEmprunt AS statutEmprunt, " +
+           "CASE WHEN e.dateRetour < CURRENT_DATE AND e.statutEmprunt IN ('en_cours', 'En cours') " +
+           "THEN CAST(CURRENT_DATE - e.dateRetour AS integer) ELSE 0 END AS joursDeRetard " +
+           "FROM Emprunt e " +
+           "LEFT JOIN e.utilisateur u " +
+           "WHERE e.id = :id")
+    Optional<Object[]> findEmpruntBasicById(@Param("id") Integer id);
+
     long countByStatutEmprunt(String statutEmprunt);
 
     @Query("SELECT COUNT(e) FROM Emprunt e WHERE e.dateRetour < CURRENT_DATE AND e.statutEmprunt IN ('en_cours', 'En cours')")

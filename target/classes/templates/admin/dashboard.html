@@ -108,9 +108,15 @@
                 <div class="stat-label">Réservations en attente</div>
             </div>
             <div class="stat-card">
-                <div class="stat-number" th:text="${empruntsRetard}">0</div>
+                <div class="stat-number" th:text="${empruntsEnRetard}">0</div>
                 <div class="stat-label">Emprunts en retard</div>
             </div>
+
+            <div class="stat-card">
+                <div class="stat-number" th:text="${prolongementsEnAttente}">0</div>
+                <div class="stat-label">Prolongements en attente</div>
+            </div>
+
             <div class="stat-card">
                 <div class="stat-number" th:text="${totalUtilisateurs}">0</div>
                 <div class="stat-label">Utilisateurs actifs</div>
@@ -129,6 +135,14 @@
                 <p>Validez les réservations en attente et convertissez-les en emprunts.</p>
                 <a th:href="@{/admin/reservations}" class="btn btn-success">Gérer les Réservations</a>
             </div>
+
+            <div class="admin-card">
+                <h3>⏰ Gestion des Prolongements</h3>
+                <p>Approuvez ou refusez les demandes de prolongement d'emprunts.</p>
+                <a th:href="@{/admin/prolongements}" class="btn btn-warning">Gérer les Prolongements</a>
+            </div>
+
+
 
             <div class="admin-card">
                 <h3>➕ Nouvel Emprunt</h3>
@@ -161,7 +175,20 @@
             </div>
         </div>
 
+        <!-- Messages d'alerte -->
+        <div th:if="${success}" class="alert alert-success" style="margin: 20px 0; padding: 15px; background: #d4edda; border: 1px solid #c3e6cb; border-radius: 4px; color: #155724;">
+            <span th:text="${success}"></span>
+        </div>
+        <div th:if="${error}" class="alert alert-danger" style="margin: 20px 0; padding: 15px; background: #f8d7da; border: 1px solid #f5c6cb; border-radius: 4px; color: #721c24;">
+            <span th:text="${error}"></span>
+        </div>
+
         <div style="text-align: center; margin-top: 30px;">
+            <form th:action="@{/admin/fix-quota}" method="post" style="display: inline; margin-right: 10px;">
+                <button type="submit" class="btn btn-warning" onclick="return confirm('Corriger le quota de tous les utilisateurs ?')">
+                    🔧 Corriger Quota Utilisateurs
+                </button>
+            </form>
             <a th:href="@{/logout}" class="btn btn-secondary">Déconnexion</a>
         </div>
     </div>

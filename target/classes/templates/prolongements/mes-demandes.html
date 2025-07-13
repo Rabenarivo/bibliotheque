@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Mes Demandes de Prolongement</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        .demandes-container {
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        .stats-section {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+        .stat-card {
+            background: white;
+            border: 1px solid #e9ecef;
+            border-radius: 12px;
+            padding: 20px;
+            text-align: center;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+        .stat-number {
+            font-size: 2.5em;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+        .stat-en-attente { color: #ffc107; }
+        .stat-acceptees { color: #28a745; }
+        .stat-refusees { color: #dc3545; }
+        .stat-label {
+            color: #6c757d;
+            font-size: 0.9em;
+        }
+        .demandes-section {
+            background: white;
+            border: 1px solid #e9ecef;
+            border-radius: 12px;
+            padding: 30px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+        .demande-item {
+            border: 1px solid #e9ecef;
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 20px;
+            transition: box-shadow 0.3s ease;
+        }
+        .demande-item:hover {
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+        .demande-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid #e9ecef;
+        }
+        .demande-id {
+            font-size: 1.2em;
+            font-weight: bold;
+            color: #2c3e50;
+        }
+        .demande-statut {
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 0.9em;
+            font-weight: 600;
+        }
+        .statut-en-attente {
+            background: #fff3cd;
+            color: #856404;
+        }
+        .statut-acceptee {
+            background: #d4edda;
+            color: #155724;
+        }
+        .statut-refusee {
+            background: #f8d7da;
+            color: #721c24;
+        }
+        .demande-details {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-bottom: 15px;
+        }
+        .detail-item {
+            display: flex;
+            flex-direction: column;
+        }
+        .detail-label {
+            font-weight: 600;
+            color: #6c757d;
+            font-size: 0.9em;
+            margin-bottom: 5px;
+        }
+        .detail-value {
+            color: #2c3e50;
+        }
+        .demande-motif {
+            background: #f8f9fa;
+            border: 1px solid #e9ecef;
+            border-radius: 6px;
+            padding: 15px;
+            margin-top: 15px;
+        }
+        .motif-label {
+            font-weight: 600;
+            color: #495057;
+            margin-bottom: 8px;
+        }
+        .motif-text {
+            color: #6c757d;
+            line-height: 1.5;
+        }
+        .empty-state {
+            text-align: center;
+            padding: 60px 20px;
+            color: #6c757d;
+        }
+        .empty-state i {
+            font-size: 4em;
+            margin-bottom: 20px;
+            color: #dee2e6;
+        }
+        .btn {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            text-decoration: none;
+            display: inline-block;
+            margin: 5px;
+            font-size: 14px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+        .btn-primary {
+            background: linear-gradient(135deg, #007bff, #0056b3);
+            color: white;
+        }
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0, 123, 255, 0.3);
+        }
+        .btn-secondary {
+            background: #6c757d;
+            color: white;
+        }
+        .btn-secondary:hover {
+            background: #5a6268;
+        }
+    </style>
+</head>
+<body>
+    <div class="demandes-container">
+        <h1>📝 Mes Demandes de Prolongement</h1>
+        
+        <div class="stats-section">
+            <div class="stat-card">
+                <div class="stat-number stat-en-attente" th:text="${demandesEnAttente}">0</div>
+                <div class="stat-label">En attente</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number stat-acceptees" th:text="${demandesAcceptees}">0</div>
+                <div class="stat-label">Acceptées</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number stat-refusees" th:text="${demandesRefusees}">0</div>
+                <div class="stat-label">Refusées</div>
+            </div>
+        </div>
+
+        <div class="demandes-section">
+            <h2>📋 Historique des demandes</h2>
+            
+            <div th:if="${demandes.empty}" class="empty-state">
+                <i class="fas fa-inbox"></i>
+                <h3>Aucune demande trouvée</h3>
+                <p>Vous n'avez pas encore fait de demande de prolongement.</p>
+                <a th:href="@{/prolongements}" class="btn btn-primary">
+                    <i class="fas fa-plus"></i> Faire une demande
+                </a>
+            </div>
+            
+            <div th:unless="${demandes.empty}">
+                <div th:each="demande : ${demandes}" class="demande-item">
+                    <div class="demande-header">
+                        <div class="demande-id">
+                            Demande #<span th:text="${demande.id}"></span>
+                        </div>
+                        <div th:class="${'demande-statut statut-' + demande.statut}" th:text="${demande.statut}">
+                            Statut
+                        </div>
+                    </div>
+                    
+                    <div class="demande-details">
+                        <div class="detail-item">
+                            <div class="detail-label">Emprunt ID</div>
+                            <div class="detail-value" th:text="${demande.emprunt.id}"></div>
+                        </div>
+                        <div class="detail-item">
+                            <div class="detail-label">Date de demande</div>
+                            <div class="detail-value" th:text="${#temporals.format(demande.dateDemande, 'dd/MM/yyyy')}"></div>
+                        </div>
+                        <div class="detail-item">
+                            <div class="detail-label">Nouvelle date souhaitée</div>
+                            <div class="detail-value" th:text="${#temporals.format(demande.dateProlongementDemandee, 'dd/MM/yyyy')}"></div>
+                        </div>
+                        <div class="detail-item" th:if="${demande.dateValidation != null}">
+                            <div class="detail-label">Date de validation</div>
+                            <div class="detail-value" th:text="${#temporals.format(demande.dateValidation, 'dd/MM/yyyy')}"></div>
+                        </div>
+                        <div class="detail-item" th:if="${demande.adminValidateur != null}">
+                            <div class="detail-label">Validé par</div>
+                            <div class="detail-value" th:text="${demande.adminValidateur.prenom + ' ' + demande.adminValidateur.nom}"></div>
+                        </div>
+                    </div>
+                    
+                    <div class="demande-motif">
+                        <div class="motif-label">Motif de la demande :</div>
+                        <div class="motif-text" th:text="${demande.motif}"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div style="text-align: center; margin-top: 30px;">
+            <a th:href="@{/prolongements}" class="btn btn-primary">
+                <i class="fas fa-arrow-left"></i> Retour aux prolongements
+            </a>
+            <a th:href="@{/profile}" class="btn btn-secondary">
+                <i class="fas fa-user"></i> Mon profil
+            </a>
+        </div>
+    </div>
+</body>
+</html> 

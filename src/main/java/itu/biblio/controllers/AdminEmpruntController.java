@@ -16,6 +16,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 @Controller
 @RequestMapping("/admin/emprunts")
@@ -160,12 +161,43 @@ public class AdminEmpruntController {
     // Détails d'un emprunt
     @GetMapping("/{id}")
     public String showEmpruntDetails(@PathVariable Integer id, Model model) {
-        EmpruntProjection emprunt = empruntService.getEmpruntByIdWithDetails(id);
-        if (emprunt == null) {
-            return "redirect:/admin/emprunts?error=not_found";
+        System.out.println("Recherche de l'emprunt avec l'ID: " + id);
+        
+        // Essayer d'abord avec la projection
+        EmpruntProjection empruntProjection = empruntService.getEmpruntByIdWithDetails(id);
+        
+        if (empruntProjection != null) {
+            System.out.println("Emprunt trouvé via projection");
+            model.addAttribute("emprunt", empruntProjection);
+            return "admin/emprunts/details";
         }
-        model.addAttribute("emprunt", emprunt);
-        return "admin/emprunts/details";
+        
+        // Si la projection ne fonctionne pas, essayer avec l'entité simple
+        System.out.println("Tentative avec l'entité simple...");
+        Optional<Emprunt> empruntOpt = empruntService.getEmpruntById(id);
+        if (empruntOpt.isPresent()) {
+            Emprunt emprunt = empruntOpt.get();
+            System.out.println("Emprunt trouvé via entité simple: " + emprunt.getId());
+            
+            // Créer un objet simple pour le template
+            model.addAttribute("emprunt", new Object() {
+                public Integer getEmpruntId() { return emprunt.getId(); }
+                public String getUtilisateurNom() { return emprunt.getUtilisateur() != null ? emprunt.getUtilisateur().getNom() : "N/A"; }
+                public String getUtilisateurPrenom() { return emprunt.getUtilisateur() != null ? emprunt.getUtilisateur().getPrenom() : "N/A"; }
+                public String getUtilisateurEmail() { return emprunt.getUtilisateur() != null ? emprunt.getUtilisateur().getEmail() : "N/A"; }
+                public String getLivreTitre() { return "À récupérer"; }
+                public String getLivreAuteur() { return "À récupérer"; }
+                public java.time.LocalDate getDateEmprunt() { return emprunt.getDateEmprunt(); }
+                public java.time.LocalDate getDateRetour() { return emprunt.getDateRetour(); }
+                public String getStatutEmprunt() { return emprunt.getStatutEmprunt(); }
+                public java.time.LocalDate getDateRetourEffective() { return null; }
+                public Integer getJoursDeRetard() { return 0; }
+            });
+            return "admin/emprunts/details";
+        }
+        
+        System.out.println("Aucun emprunt trouvé, redirection vers la liste");
+        return "redirect:/admin/emprunts?error=not_found";
     }
 
     // Formulaire de modification d'emprunt

@@ -326,6 +326,11 @@ button:hover {
     color: white;
 }
 
+.profile-btn-info {
+    background: #17a2b8;
+    color: white;
+}
+
 .profile-btn:hover {
     transform: translateY(-2px);
     box-shadow: 0 4px 8px rgba(0,0,0,0.2);

@@ -1,0 +1,328 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Demande de Prolongement</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        .demande-container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        .form-section {
+            background: white;
+            border: 1px solid #e9ecef;
+            border-radius: 12px;
+            padding: 30px;
+            margin-bottom: 20px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        .form-group {
+            margin-bottom: 25px;
+        }
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #2c3e50;
+            font-size: 16px;
+        }
+        .form-group input,
+        .form-group textarea {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #e9ecef;
+            border-radius: 8px;
+            font-size: 16px;
+            transition: border-color 0.3s ease;
+        }
+        .form-group input:focus,
+        .form-group textarea:focus {
+            outline: none;
+            border-color: #007bff;
+            box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.1);
+        }
+        .form-group textarea {
+            height: 120px;
+            resize: vertical;
+        }
+        .form-group small {
+            display: block;
+            margin-top: 5px;
+            color: #6c757d;
+            font-size: 0.9em;
+        }
+        .checkbox-group {
+            margin-bottom: 20px;
+        }
+        .checkbox-item {
+            display: flex;
+            align-items: center;
+            margin-bottom: 15px;
+            padding: 15px;
+            background: #f8f9fa;
+            border-radius: 8px;
+            border: 1px solid #e9ecef;
+        }
+        .checkbox-item input[type="checkbox"] {
+            width: auto;
+            margin-right: 15px;
+            transform: scale(1.2);
+        }
+        .checkbox-item label {
+            margin: 0;
+            font-weight: 500;
+            color: #495057;
+            cursor: pointer;
+        }
+        .btn {
+            padding: 15px 30px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            text-decoration: none;
+            display: inline-block;
+            margin: 10px;
+            font-size: 16px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+        .btn-primary {
+            background: linear-gradient(135deg, #007bff, #0056b3);
+            color: white;
+        }
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0, 123, 255, 0.3);
+        }
+        .btn-secondary {
+            background: #6c757d;
+            color: white;
+        }
+        .btn-secondary:hover {
+            background: #5a6268;
+        }
+        .btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+        .alert {
+            padding: 15px;
+            margin-bottom: 20px;
+            border: 1px solid transparent;
+            border-radius: 8px;
+        }
+        .alert-danger {
+            color: #721c24;
+            background-color: #f8d7da;
+            border-color: #f5c6cb;
+        }
+        .alert-success {
+            color: #155724;
+            background-color: #d4edda;
+            border-color: #c3e6cb;
+        }
+        .progress-bar {
+            width: 100%;
+            height: 8px;
+            background-color: #e9ecef;
+            border-radius: 4px;
+            margin: 20px 0;
+            overflow: hidden;
+        }
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #28a745, #20c997);
+            width: 0%;
+            transition: width 0.3s ease;
+        }
+        .progress-text {
+            text-align: center;
+            color: #6c757d;
+            font-size: 14px;
+            margin-top: 10px;
+        }
+        .info-box {
+            background: #e3f2fd;
+            border: 1px solid #bbdefb;
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 30px;
+        }
+        .info-box h3 {
+            color: #1976d2;
+            margin-bottom: 10px;
+        }
+        .info-box ul {
+            margin: 0;
+            padding-left: 20px;
+        }
+        .info-box li {
+            color: #424242;
+            margin-bottom: 5px;
+        }
+    </style>
+</head>
+<body>
+    <div class="demande-container">
+        <h1>⏰ Demande de Prolongement</h1>
+        
+        <!-- Messages d'alerte -->
+        <div th:if="${error}" class="alert alert-danger" th:text="${error}"></div>
+        <div th:if="${success}" class="alert alert-success" th:text="${success}"></div>
+        
+        <div class="info-box">
+            <h3>📋 Informations importantes</h3>
+            <ul>
+                <li>Une prolongation approuvée compte comme 1 quota supplémentaire</li>
+                <li>Maximum 3 demandes en attente simultanément</li>
+                <li>La nouvelle date doit être postérieure à la date de demande</li>
+                <li>Votre demande sera examinée par un administrateur</li>
+            </ul>
+        </div>
+
+        <div class="form-section">
+            <h2>📝 Formulaire de demande</h2>
+            
+            <form th:action="@{/prolongements/demander/{empruntId}(empruntId=${empruntId})}" method="post" id="prolongementForm">
+                <div class="form-group">
+                    <label for="dateDemande">
+                        <i class="fas fa-calendar"></i> Date de demande *
+                    </label>
+                    <input type="date" name="dateDemande" id="dateDemande" required 
+                           th:value="${#temporals.format(#temporals.createToday(), 'yyyy-MM-dd')}">
+                    <small>Date à laquelle vous soumettez cette demande</small>
+                </div>
+
+                <div class="form-group">
+                    <label for="nouvelleDate">
+                        <i class="fas fa-calendar-plus"></i> Nouvelle date de retour souhaitée *
+                    </label>
+                    <input type="date" name="nouvelleDate" id="nouvelleDate" required onchange="validateDates()">
+                    <small>Cette date doit être postérieure à la date de demande</small>
+                </div>
+
+                <div class="form-group">
+                    <label for="motif">
+                        <i class="fas fa-comment"></i> Motif de la demande *
+                    </label>
+                    <textarea name="motif" id="motif" required oninput="updateProgress()"
+                              placeholder="Expliquez en détail pourquoi vous avez besoin d'une prolongation..."></textarea>
+                    <small>Décrivez clairement les raisons de votre demande de prolongation</small>
+                </div>
+
+                <div class="checkbox-group">
+                    <h3>✅ Confirmations requises</h3>
+                    
+                    <div class="checkbox-item">
+                        <input type="checkbox" id="confirmCheck" onchange="updateProgress()" required>
+                        <label for="confirmCheck">
+                            Je confirme que les informations fournies sont exactes et que j'ai besoin de cette prolongation
+                        </label>
+                    </div>
+                    
+                    <div class="checkbox-item">
+                        <input type="checkbox" id="termsCheck" onchange="updateProgress()" required>
+                        <label for="termsCheck">
+                            J'accepte que mon quota soit diminué si la demande est approuvée (compte comme 1 quota supplémentaire)
+                        </label>
+                    </div>
+                    
+                    <div class="checkbox-item">
+                        <input type="checkbox" id="rulesCheck" onchange="updateProgress()" required>
+                        <label for="rulesCheck">
+                            J'ai lu et j'accepte les règles de prolongement de la bibliothèque
+                        </label>
+                    </div>
+                </div>
+
+                <div class="progress-bar">
+                    <div class="progress-fill" id="progressFill"></div>
+                </div>
+                <div class="progress-text" id="progressText">Complétez tous les champs pour continuer</div>
+
+                <div style="text-align: center; padding-top: 20px; border-top: 1px solid #e9ecef;">
+                    <button type="submit" class="btn btn-primary" id="submitBtn" disabled>
+                        <i class="fas fa-paper-plane"></i> Soumettre la demande
+                    </button>
+                    <a th:href="@{/prolongements}" class="btn btn-secondary">
+                        <i class="fas fa-times"></i> Annuler
+                    </a>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        function validateDates() {
+            const dateDemande = document.getElementById('dateDemande').value;
+            const nouvelleDate = document.getElementById('nouvelleDate').value;
+            const submitBtn = document.getElementById('submitBtn');
+            
+            if (dateDemande && nouvelleDate) {
+                const dateDemandeObj = new Date(dateDemande);
+                const nouvelleDateObj = new Date(nouvelleDate);
+                
+                if (nouvelleDateObj <= dateDemandeObj) {
+                    alert('⚠️ La nouvelle date doit être postérieure à la date de demande');
+                    submitBtn.disabled = true;
+                } else {
+                    updateProgress();
+                }
+            }
+        }
+
+        function updateProgress() {
+            const dateDemande = document.getElementById('dateDemande').value;
+            const nouvelleDate = document.getElementById('nouvelleDate').value;
+            const motif = document.getElementById('motif').value;
+            const confirmCheck = document.getElementById('confirmCheck').checked;
+            const termsCheck = document.getElementById('termsCheck').checked;
+            const rulesCheck = document.getElementById('rulesCheck').checked;
+            
+            let progress = 0;
+            let completed = 0;
+            const total = 6;
+            
+            if (dateDemande) { progress += 16.67; completed++; }
+            if (nouvelleDate) { progress += 16.67; completed++; }
+            if (motif.trim().length > 10) { progress += 16.67; completed++; }
+            if (confirmCheck) { progress += 16.67; completed++; }
+            if (termsCheck) { progress += 16.67; completed++; }
+            if (rulesCheck) { progress += 16.67; completed++; }
+            
+            document.getElementById('progressFill').style.width = progress + '%';
+            
+            const progressText = document.getElementById('progressText');
+            const submitBtn = document.getElementById('submitBtn');
+            
+            if (completed === total) {
+                progressText.textContent = '✅ Formulaire complet ! Vous pouvez soumettre votre demande';
+                progressText.style.color = '#28a745';
+                submitBtn.disabled = false;
+            } else {
+                progressText.textContent = `${completed}/${total} champs complétés`;
+                progressText.style.color = '#6c757d';
+                submitBtn.disabled = true;
+            }
+        }
+
+        // Initialiser la progression au chargement de la page
+        document.addEventListener('DOMContentLoaded', function() {
+            updateProgress();
+            
+            // Définir la date minimale pour la nouvelle date
+            const dateDemande = document.getElementById('dateDemande');
+            const nouvelleDate = document.getElementById('nouvelleDate');
+            
+            dateDemande.addEventListener('change', function() {
+                nouvelleDate.min = this.value;
+                validateDates();
+            });
+        });
+    </script>
+</body>
+</html> 

@@ -42,6 +42,10 @@ public class UtilisateurServices {
         utilisateurRepository.save(utilisateur);
     }
 
+    public Utilisateur saveUtilisateur(Utilisateur utilisateur) {
+        return utilisateurRepository.save(utilisateur);
+    }
+
     public Utilisateur login(String email, String password) {
         Optional<Utilisateur> utilisateur = utilisateurRepository.findByEmail(email);
         if (utilisateur.isPresent() && utilisateur.get().getMdp().equals(password)) {

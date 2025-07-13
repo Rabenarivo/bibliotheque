@@ -145,6 +145,20 @@
                 Modifier l'emprunt
             </a>
             
+            <a th:if="${emprunt.statutEmprunt == 'en_cours'}" 
+               th:href="@{/prolongements/test/{empruntId}(empruntId=${emprunt.empruntId})}" 
+               class="btn btn-info">
+                🔍 Test Prolongation
+            </a>
+            
+            <a th:if="${emprunt.statutEmprunt == 'en_cours'}" 
+               th:href="@{/prolongements/demander/{empruntId}(empruntId=${emprunt.empruntId})}" 
+               class="btn btn-primary">
+                📝 Demander Prolongation
+            </a>
+            
+
+            
             <form th:if="${emprunt.statutEmprunt == 'en_cours'}" 
                   th:action="@{/admin/emprunts/{id}/return(id=${emprunt.empruntId})}" 
                   method="post" style="display: inline;">
